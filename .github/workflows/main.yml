@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         configuration: ["Debug", "Release"]
-        platform: ["Win32", "x64"]
+        platform: ["x86", "x64"]
     steps:
     - uses: actions/checkout@v1
       with:
