@@ -20,7 +20,7 @@ jobs:
       run: |
         echo Running MSBuild.exe $Env:GITHUB_WORKSPACE\ /property:Configuration=${{ matrix.configuration }} /property:Platform=${{ matrix.platoform }}
         cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
-        .\MSBuild.exe $Env:GITHUB_WORKSPACE\ /property:Configuration=${{ matrix.configuration }} /property:Platform=${{ matrix.platoform }}
+        .\MSBuild.exe $Env:GITHUB_WORKSPACE\ /property:Configuration="${{ matrix.configuration }}" /property:Platform="${{ matrix.platform }}"
         
     - name: Upload builds
       uses: actions/upload-artifact@v1  
