@@ -1,0 +1,27 @@
+name: Build
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build ${{ matrix.configuration }}-${{ matrix.platform }}
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        configuration: ["Debug", "Release"]
+        platform: ["Win32", "x64"]
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        ref: ${{ github.event.tag_name }}
+    - name: Compile debug build
+      run: |
+        cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
+        .\MSBuild.exe $Env:GITHUB_WORKSPACE\ /property:Configuration=${{ matrix.configuration }} /property:Platform=${{ matrix.platoform }}
+    - name: Upload builds
+      uses: actions/upload-artifact@v1  
+      with:
+        name: LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}
+        path: ./Bin/LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}
