@@ -3,12 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29521.150
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LightSimulator", "LightSimulator\LightSimulator.vcxproj", "{9F86781B-3C01-4C9C-873E-9AE3CA166E10}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F93BF00F-577F-467B-8F85-B73FA798A3C4}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LightSimulator", "LightSimulator\LightSimulator.vcxproj", "{9CA44BB7-6552-444B-943C-15EC673DDBBA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,14 +18,14 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9F86781B-3C01-4C9C-873E-9AE3CA166E10}.Debug|x64.ActiveCfg = Debug|x64
-		{9F86781B-3C01-4C9C-873E-9AE3CA166E10}.Debug|x64.Build.0 = Debug|x64
-		{9F86781B-3C01-4C9C-873E-9AE3CA166E10}.Debug|x86.ActiveCfg = Debug|Win32
-		{9F86781B-3C01-4C9C-873E-9AE3CA166E10}.Debug|x86.Build.0 = Debug|Win32
-		{9F86781B-3C01-4C9C-873E-9AE3CA166E10}.Release|x64.ActiveCfg = Release|x64
-		{9F86781B-3C01-4C9C-873E-9AE3CA166E10}.Release|x64.Build.0 = Release|x64
-		{9F86781B-3C01-4C9C-873E-9AE3CA166E10}.Release|x86.ActiveCfg = Release|Win32
-		{9F86781B-3C01-4C9C-873E-9AE3CA166E10}.Release|x86.Build.0 = Release|Win32
+		{9CA44BB7-6552-444B-943C-15EC673DDBBA}.Debug|x64.ActiveCfg = Debug|x64
+		{9CA44BB7-6552-444B-943C-15EC673DDBBA}.Debug|x64.Build.0 = Debug|x64
+		{9CA44BB7-6552-444B-943C-15EC673DDBBA}.Debug|x86.ActiveCfg = Debug|Win32
+		{9CA44BB7-6552-444B-943C-15EC673DDBBA}.Debug|x86.Build.0 = Debug|Win32
+		{9CA44BB7-6552-444B-943C-15EC673DDBBA}.Release|x64.ActiveCfg = Release|x64
+		{9CA44BB7-6552-444B-943C-15EC673DDBBA}.Release|x64.Build.0 = Release|x64
+		{9CA44BB7-6552-444B-943C-15EC673DDBBA}.Release|x86.ActiveCfg = Release|Win32
+		{9CA44BB7-6552-444B-943C-15EC673DDBBA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
