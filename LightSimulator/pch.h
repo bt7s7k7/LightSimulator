@@ -9,5 +9,20 @@
 
 // add headers that you want to pre-compile here
 #include <iostream>
+// disable all kinds of warnings, it's not my fault these libraries are bad
+#pragma warning( push )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : 6387 )
+#pragma warning( disable : 26498 )
+#pragma warning( disable : 26495 )
+#pragma warning( disable : 4275 )
+#pragma warning( disable : 26439 )
+#include <SDL2/SDL.h>
+#include <spdlog/spdlog.h>
+#pragma warning( pop ) 
+#include <unordered_map>
+#include <stdexcept>
+
+#include "vendor/SDLHelper.h"
 
 #endif //PCH_H
