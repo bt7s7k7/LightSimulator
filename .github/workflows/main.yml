@@ -18,6 +18,7 @@ jobs:
         ref: ${{ github.event.tag_name }}
     - name: Install vcpkg packages
       run: |
+        vcpkg integrate install
         vcpkg install sdl2:${{ matrix.platform }}-windows
         vcpkg install spdlog:${{ matrix.platform }}-windows
     - name: Compile debug build
