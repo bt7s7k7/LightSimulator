@@ -5,8 +5,8 @@
 	"definitions": {
 		"vec2": {
 			"type": "array",
-			"minLength": 2,
-			"maxLength": 2,
+			"maxItems": 2,
+			"minItems": 2,
 			"default": [ 100, 100 ],
 			"items": {
 				"type": "number"
@@ -28,7 +28,8 @@
 					"b": {
 						"$ref": "#/definitions/vec2"
 					}
-				}
+				},
+				"required": [ "a", "b" ]
 			}
 		}
 	},
