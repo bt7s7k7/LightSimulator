@@ -17,6 +17,8 @@
 #pragma warning( disable : 26495 )
 #pragma warning( disable : 4275 )
 #pragma warning( disable : 26439 )
+#pragma warning( disable : 26444 )
+#pragma warning( disable : 28020 )
 #include <SDL2/SDL.h>
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
