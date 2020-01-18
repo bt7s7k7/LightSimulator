@@ -61,6 +61,9 @@ void update(space_t& space) {
 					} catch (const except::config_ex & err) {
 						spdlog::error(err.what());
 						space.clear();
+					} catch (const except::fileOpenFail_ex & err) {
+						spdlog::error(err.what());
+						space.clear();
 					}
 				} else {
 					spdlog::error("Unknown command");
