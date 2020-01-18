@@ -8,12 +8,6 @@ int main() try {
 	spdlog::info("SDL initialized");
 
 	space_t space;
-	space.lines.push_back(line_t(vec2_t(25, 25), vec2_t(75, 25)));
-	space.lines.push_back(line_t(vec2_t(25, 25), vec2_t(25, 75)));
-	space.lines.push_back(line_t(vec2_t(75, 25), vec2_t(75, 75)));
-	space.lines.push_back(line_t(vec2_t(25, 75), vec2_t(45, 75)));
-	space.lines.push_back(line_t(vec2_t(55, 75), vec2_t(75, 75)));
-	space.size = vec2_t(100, 100);
 
 	update(space);
 	

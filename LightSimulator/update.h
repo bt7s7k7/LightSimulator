@@ -2,4 +2,4 @@
 #include "pch.h"
 #include "space.h"
 
-void update(const space_t& space);
+void update(space_t& space);

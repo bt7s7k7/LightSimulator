@@ -11,6 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LightSimulator", "LightSimulator\LightSimulator.vcxproj", "{9CA44BB7-6552-444B-943C-15EC673DDBBA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{4C742069-7E1C-4FA9-B922-B6E355D643B8}"
+	ProjectSection(SolutionItems) = preProject
+		Example\room.json = Example\room.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -30,6 +35,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4C742069-7E1C-4FA9-B922-B6E355D643B8} = {F93BF00F-577F-467B-8F85-B73FA798A3C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {66772884-682A-4240-8F81-A8D8E5162DC6}

@@ -1,0 +1,36 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"type": "object",
+	"title": "Light Simulator space config",
+	"definitions": {
+		"vec2": {
+			"type": "array",
+			"minLength": 2,
+			"maxLength": 2,
+			"default": [ 100, 100 ],
+			"items": {
+				"type": "number"
+			}
+		}
+	},
+	"properties": {
+		"size": {
+			"$ref": "#/definitions/vec2"
+		},
+		"lines": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"a": {
+						"$ref": "#/definitions/vec2"
+					},
+					"b": {
+						"$ref": "#/definitions/vec2"
+					}
+				}
+			}
+		}
+	},
+	"required": [ "size", "lines" ]
+}

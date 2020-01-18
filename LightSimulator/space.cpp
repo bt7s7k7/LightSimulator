@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "space.h"
+#include "exceptions.h"
 
 void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& mousePos) const {
 	extent_t w = surface->w;
@@ -59,4 +60,59 @@ extent_t space_t::getMinDist(const vec2_t& point) const {
 		}
 	}
 	return min;
+}
+
+void space_t::loadFromFile(const std::filesystem::path& path) {
+	std::ifstream file;
+
+	file.open(path);
+
+	if (file.fail()) {
+		throw except::fileOpenFail_ex(std::string("Failed to open file "), errno);
+	}
+
+	auto json = nlohmann::json::parse(file);
+
+	auto parseVec2 = [&](const nlohmann::json::value_type& value, const std::string& name) {
+		if (!value.is_array()
+			|| value.size() != 2
+			|| !value.at(0).is_number()
+			|| !value.at(1).is_number()
+			) throw except::configValueMistyped_ex(name, "[x : number, y : number]");
+
+		return vec2_t(value.at(0), value.at(1));
+	};
+
+	{
+		auto sizeValue = json.find("size");
+		if (sizeValue == json.end()) throw except::configValueMissing_ex("size");
+		
+		size = parseVec2(*sizeValue, "size");
+	}
+
+	{
+		auto linesValue = json.find("lines");
+		if (linesValue == json.end()) throw except::configValueMissing_ex("lines");
+		if (!linesValue->is_array()) throw except::configValueMistyped_ex("lines", "Line[]");
+
+		lines.clear();
+		lines.reserve(linesValue->size());
+		for (size_t i = 0, len = linesValue->size(); i < len; i++) {
+			auto& lineValue = linesValue->at(i);
+			auto& line = lines.emplace_back();
+			if (!lineValue.is_object()) throw except::configValueMistyped_ex("lines[" + std::to_string(i) + "]", "Line");
+			{
+				auto point = lineValue.find("a");
+				if (point == lineValue.end()) throw except::configValueMissing_ex("lines[" + std::to_string(i) + "].a");
+				
+				line.a = parseVec2(*point, "lines[" + std::to_string(i) + "].a");
+			}
+			{
+				auto point = lineValue.find("b");
+				if (point == lineValue.end()) throw except::configValueMissing_ex("lines[" + std::to_string(i) + "].b");
+
+				line.b = parseVec2(*point, "lines[" + std::to_string(i) + "].b");
+			}
+		}
+	}
 }

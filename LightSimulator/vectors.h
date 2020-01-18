@@ -13,19 +13,19 @@ struct vec2_t {
 	inline vec2_t operator +(const vec2_t& other) const {
 		return vec2_t(x + other.x, y + other.y);
 	}
-	
+
 	inline vec2_t operator -(const vec2_t& other) const {
 		return vec2_t(x - other.x, y - other.y);
 	}
-	
+
 	inline vec2_t operator *(const vec2_t& other) const {
 		return vec2_t(x * other.x, y * other.y);
 	}
-	
+
 	inline vec2_t operator *(extent_t other) const {
 		return vec2_t(x * other, y * other);
 	}
-	
+
 	inline vec2_t operator -() const {
 		return vec2_t(-x, -y);
 	}
@@ -57,7 +57,7 @@ struct color_t {
 			b + other.b
 		);
 	}
-	
+
 	inline color_t operator*(const color_t& other) {
 		return color_t(
 			r * other.r,
@@ -65,7 +65,7 @@ struct color_t {
 			b * other.b
 		);
 	}
-	
+
 	inline color_t operator*(extent_t other) {
 		return color_t(
 			r * other,
@@ -75,7 +75,7 @@ struct color_t {
 	}
 
 	inline operator SDL_Color() {
-		return SDL_Color{ 
+		return SDL_Color{
 			(Uint8)std::floor(r * 255),
 			(Uint8)std::floor(g * 255),
 			(Uint8)std::floor(b * 255),

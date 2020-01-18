@@ -56,5 +56,11 @@
     <ClInclude Include="lib\surfaceShapes\surfaceShapes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="exceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="schema.json" />
   </ItemGroup>
 </Project>

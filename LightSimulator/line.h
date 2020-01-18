@@ -17,4 +17,5 @@ struct line_t {
 	}
 
 	inline line_t(vec2_t a, vec2_t b) : a(a), b(b) {};
+	inline line_t() : a(0, 0), b(0, 0) {};
 };

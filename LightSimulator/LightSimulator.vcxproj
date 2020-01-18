@@ -175,6 +175,7 @@
     <ClCompile Include="update.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="exceptions.h" />
     <ClInclude Include="lib\SDLHelper.h" />
     <ClInclude Include="lib\surfaceShapes\surfaceShapes.h" />
     <ClInclude Include="line.h" />
@@ -184,7 +185,15 @@
     <ClInclude Include="vendor\SDLHelper.h" />
     <ClInclude Include="update.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="schema.json" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -19,10 +19,17 @@
 #pragma warning( disable : 26439 )
 #include <SDL2/SDL.h>
 #include <spdlog/spdlog.h>
+#include <nlohmann/json.hpp>
 #pragma warning( pop ) 
 #include <unordered_map>
 #include <stdexcept>
 #include <cmath>
+#include <filesystem>
+#include <fstream>
+#include <atomic>
+#include <mutex>
+#include <thread>
+#include <deque>
 
 #include "lib/SDLHelper.h"
 #include "lib/surfaceShapes/surfaceShapes.h"
