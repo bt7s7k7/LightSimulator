@@ -7,6 +7,7 @@ void update(space_t& space) {
 	std::atomic<bool>* threadActive = nullptr;
 	std::deque<std::string> commands;
 	std::mutex commandsMutex;
+	std::filesystem::path lastOpenFile;
 
 	auto commandThread = std::thread([&]() {
 		auto uniqueThreadActive = std::make_unique<std::atomic<bool>>(true);
@@ -49,21 +50,33 @@ void update(space_t& space) {
 
 		{
 			std::unique_lock<std::mutex> lock(commandsMutex);
+
+			auto loadFileOnPath = [&](const std::filesystem::path& path) {
+				try {
+					space.loadFromFile(path);
+					spdlog::info("Loaded space from file");
+					lastOpenFile = path;
+				} catch (const except::config_ex & err) {
+					spdlog::error(err.what());
+					space.clear();
+				} catch (const except::fileOpenFail_ex & err) {
+					spdlog::error(err.what());
+					space.clear();
+				}
+			};
+
 			while (!commands.empty()) {
 				auto command = commands.front();
 				commands.pop_front();
 				if (command[0] == 'o') {
 					auto path = std::filesystem::path(command.substr(1));
 
-					try {
-						space.loadFromFile(path);
-						spdlog::info("Loaded space from file");
-					} catch (const except::config_ex & err) {
-						spdlog::error(err.what());
-						space.clear();
-					} catch (const except::fileOpenFail_ex & err) {
-						spdlog::error(err.what());
-						space.clear();
+					loadFileOnPath(path);
+				} else if (command == "r") {
+					if (!lastOpenFile.empty()) {
+						loadFileOnPath(lastOpenFile);
+					} else {
+						spdlog::error("No file was opened");
 					}
 				} else {
 					spdlog::error("Unknown command");
