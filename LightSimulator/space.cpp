@@ -68,7 +68,7 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 	file.open(path);
 
 	if (file.fail()) {
-		throw except::fileOpenFail_ex(std::string("Failed to open file "), errno);
+		throw except::fileOpenFail_ex(std::filesystem::absolute(path).string(), errno);
 	}
 
 	auto json = nlohmann::json::parse(file);
