@@ -15,7 +15,11 @@ jobs:
     steps:
     - continue-on-error: true
       run: |
-        echo @"${{ toJSON(github.event) }}"@
+        echo "Upload url: ${{ github.event.upload_url }}"
+        echo "Tag: ${{ github.event.tag_name }}"
+        echo @"
+        ${{ toJSON(github.event) }}
+        "@
       
     - uses: actions/checkout@v1
       with:
