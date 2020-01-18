@@ -31,10 +31,8 @@ jobs:
         .\MSBuild.exe $Env:GITHUB_WORKSPACE\ /property:Configuration="${{ matrix.configuration }}" /property:Platform="${{ matrix.platform }}"
         
     - name: Zip Release
-      uses: TheDoctor0/zip-release@v0.2.1
-      with:
-        filename: LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}.zip
-        path: ./Bin/LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}
+      run: |
+        powershell -Command Compress-Archive -Path "./Bin/LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}/*" -DestinationPath "./LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}.zip"
   
     - name: Upload Release Asset
       id: upload-release-asset 
