@@ -15,7 +15,7 @@ jobs:
     steps:
     - continue-on-error: true
       run: |
-        echo ${{ toJSON(github.event) }}
+        echo @"${{ toJSON(github.event) }}"@
       
     - uses: actions/checkout@v1
       with:
