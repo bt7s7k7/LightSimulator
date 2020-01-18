@@ -50,5 +50,5 @@ jobs:
       with:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}.zip
-        asset_name: LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}
+        asset_name: LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}.zip
         asset_content_type: application/zip
