@@ -13,6 +13,10 @@ jobs:
         configuration: ["Debug", "Release"]
         platform: ["x86", "x64"]
     steps:
+    - continue-on-error: true
+      run: |
+        echo ${{ toJSON(github.event) }}
+      
     - uses: actions/checkout@v1
       with:
         ref: ${{ github.event.tag_name }}
