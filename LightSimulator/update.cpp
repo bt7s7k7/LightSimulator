@@ -78,6 +78,8 @@ void update(space_t& space) {
 					} else {
 						spdlog::error("No file was opened");
 					}
+				} else if (command == "q") {
+					goto eventLoopExit;
 				} else {
 					spdlog::error("Unknown command");
 				}
