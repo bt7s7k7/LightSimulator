@@ -21,6 +21,7 @@ jobs:
         vcpkg integrate install
         vcpkg install sdl2:${{ matrix.platform }}-windows
         vcpkg install spdlog:${{ matrix.platform }}-windows
+        vcpkg install nlohmann-json:${{ matrix.platform }}-windows
     - name: Compile debug build
       run: |
         echo Running MSBuild.exe $Env:GITHUB_WORKSPACE\ /property:Configuration=${{ matrix.configuration }} /property:Platform=${{ matrix.platoform }}
