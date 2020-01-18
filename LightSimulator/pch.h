@@ -22,7 +22,9 @@
 #pragma warning( pop ) 
 #include <unordered_map>
 #include <stdexcept>
+#include <cmath>
 
-#include "vendor/SDLHelper.h"
+#include "lib/SDLHelper.h"
+#include "lib/surfaceShapes/surfaceShapes.h"
 
 #endif //PCH_H
