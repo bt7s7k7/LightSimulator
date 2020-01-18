@@ -15,15 +15,15 @@ jobs:
     steps:
     - continue-on-error: true
       run: |
-        echo "Upload url: ${{ github.event.upload_url }}"
-        echo "Tag: ${{ github.event.tag_name }}"
+        echo "Upload url: ${{ github.event.release.upload_url }}"
+        echo "Tag: ${{ github.event.release.tag_name }}"
         echo @"
         ${{ toJSON(github.event) }}
         "@
       
     - uses: actions/checkout@v1
       with:
-        ref: ${{ github.event.tag_name }}
+        ref: ${{ github.event.release.tag_name }}
     
     - name: Install vcpkg packages
       run: |
@@ -48,7 +48,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ github.event.upload_url }}
+        upload_url: ${{ github.event.release.upload_url }}
         asset_path: LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}.zip
         asset_name: LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}
         asset_content_type: application/zip
