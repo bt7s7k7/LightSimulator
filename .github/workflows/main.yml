@@ -16,20 +16,33 @@ jobs:
     - uses: actions/checkout@v1
       with:
         ref: ${{ github.event.tag_name }}
+    
     - name: Install vcpkg packages
       run: |
         vcpkg integrate install
         vcpkg install sdl2:${{ matrix.platform }}-windows
         vcpkg install spdlog:${{ matrix.platform }}-windows
         vcpkg install nlohmann-json:${{ matrix.platform }}-windows
+        
     - name: Compile debug build
       run: |
         echo Running MSBuild.exe $Env:GITHUB_WORKSPACE\ /property:Configuration=${{ matrix.configuration }} /property:Platform=${{ matrix.platoform }}
         cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
         .\MSBuild.exe $Env:GITHUB_WORKSPACE\ /property:Configuration="${{ matrix.configuration }}" /property:Platform="${{ matrix.platform }}"
         
-    - name: Upload builds
-      uses: actions/upload-artifact@v1  
+    - name: Zip Release
+      uses: TheDoctor0/zip-release@v0.2.1
       with:
-        name: LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}
+        filename: LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}.zip
         path: ./Bin/LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}
+  
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.upload_url }}
+        asset_path: LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}.zip
+        asset_name: LightSimulator-${{ matrix.configuration }}-${{ matrix.platform }}
+        asset_content_type: application/zip
