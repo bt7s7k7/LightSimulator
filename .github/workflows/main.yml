@@ -25,12 +25,10 @@ jobs:
       with:
         ref: ${{ github.event.release.tag_name }}
     
-    - name: Install vcpkg packages
+    - name: Download built vcpkg packages
       run: |
-        vcpkg integrate install
-        vcpkg install sdl2:${{ matrix.platform }}-windows
-        vcpkg install spdlog:${{ matrix.platform }}-windows
-        vcpkg install nlohmann-json:${{ matrix.platform }}-windows
+        Invoke-WebRequest -Uri https://github.com/bt7s7k7/actionsTest/releases/download/v0.0.6/vcpkg.zip -OutFile vcpkg.zip
+        Expand-Archive -Path .\vcpkg.zip -DestinationPath C:\vcpkg\ -Force
         
     - name: Compile debug build
       run: |
