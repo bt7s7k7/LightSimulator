@@ -39,12 +39,12 @@ struct spawner_t {
 		square
 	};
 
-	type_e type;
+	type_e type = type_e::square;
 	vec2_t size;
 	vec2_t pos;
-	extent_t wavelenghtMin;
-	extent_t wavelenghtMax;
-	extent_t ratio;
+	extent_t wavelenghtMin = 0;
+	extent_t wavelenghtMax = 0;
+	extent_t ratio = 1;
 };
 
 struct space_t : public objectHolder_t<line_t> {
