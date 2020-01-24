@@ -45,6 +45,12 @@ void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& m
 	for (auto& line : lines) {
 		shapes::line(surface, localToScreen(line.a), localToScreen(line.b), SDL_Color{ 0,255,0,255 });
 	}
+	for (auto& line : lines) {
+		auto middle = localToScreen((line.a + line.b) * 0.5);
+		SDL_Point offset = line.getNormal();
+
+		shapes::line(surface, SDL_Point{ middle.x + offset.x, middle.y + offset.y }, SDL_Point{middle.x + offset.x * 5, middle.y + offset.y * 5}, SDL_Color{ 255,0,0,255 });
+	}
 
 	if (drawMouse && !lines.empty()) {
 		shapes::circle(surface, mousePos, (int)std::floor(getMinDist(screenToLocal(mousePos)) * zoom), SDL_Color{ 0,255,255,255 }, false);

@@ -30,8 +30,19 @@ struct vec2_t {
 		return vec2_t(-x, -y);
 	}
 
+	inline vec2_t perpendicular() const {
+		return vec2_t(
+			-y * 1,
+			x * 1
+		);
+	}
+
 	inline extent_t length() const {
 		return std::sqrt(x * x + y * y);
+	}
+
+	inline vec2_t normalize() const {
+		return *this * (1 / length());
 	}
 
 	inline operator SDL_Point() const {

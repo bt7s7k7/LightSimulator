@@ -16,6 +16,10 @@ struct line_t {
 		return (pa - ba * h).length();
 	}
 
+	inline vec2_t getNormal() const {
+		return (b - a).perpendicular().normalize();
+	}
+
 	inline line_t(vec2_t a, vec2_t b) : a(a), b(b) {};
 	inline line_t() : a(0, 0), b(0, 0) {};
 };
