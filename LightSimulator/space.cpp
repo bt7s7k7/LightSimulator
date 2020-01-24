@@ -59,6 +59,15 @@ void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& m
 		SDL_Point normal = closest.first->getNormal(worldPos) * 5;
 		shapes::line(surface, mousePos, SDL_Point{ mousePos.x + normal.x, mousePos.y + normal.y }, SDL_Color{ 0, 255, 255, 255 });
 	}
+
+	for (auto& spawner : spawners) {
+		auto pos = localToScreen(spawner.pos);
+		constexpr SDL_Color SPAWNER_COLOR = { 255, 255, 0, 255 };
+		if (spawner.type == spawner_t::type_e::square) {
+			SDL_Point size = spawner.size * zoom;
+			shapes::square(surface, SDL_Rect{ pos.x - size.x / 2, pos.y - size.y / 2, size.x, size.y }, SPAWNER_COLOR, false);
+		}
+	}
 }
 
 extent_t space_t::getGlobalMinDist(const vec2_t& point) const {
