@@ -9,14 +9,14 @@ namespace except {
 		return std::string(buffer, 512);
 	}
 
-	struct fileOpenFail_ex : std::runtime_error { 
+	struct fileOpenFail_ex : std::runtime_error {
 		inline fileOpenFail_ex(const std::string& fileName, int reason) : std::runtime_error("Failed to open file " + fileName + ", " + getErrStr(reason)) {}
 	};
 
 	struct config_ex : std::runtime_error {
 		using std::runtime_error::runtime_error;
 	};
-	struct configValueMissing_ex : config_ex { 
+	struct configValueMissing_ex : config_ex {
 		inline configValueMissing_ex(const std::string& valueName) : config_ex("Missing value: " + valueName) {}
 	};
 	struct configValueMistyped_ex : config_ex {

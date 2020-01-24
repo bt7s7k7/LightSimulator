@@ -41,7 +41,7 @@ void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& m
 	auto screenToLocal = [&](const SDL_Point& point) -> vec2_t {
 		return (vec2_t(point) - vec2_t(targetSpace.x, targetSpace.y)) * (1 / zoom);
 	};
- 
+
 	for (auto& line : lines) {
 		shapes::line(surface, localToScreen(line.a), localToScreen(line.b), SDL_Color{ 0,255,0,255 });
 	}
@@ -49,11 +49,11 @@ void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& m
 		auto middle = localToScreen((line.a + line.b) * 0.5);
 		SDL_Point offset = line.getNormal();
 
-		shapes::line(surface, SDL_Point{ middle.x + offset.x, middle.y + offset.y }, SDL_Point{middle.x + offset.x * 5, middle.y + offset.y * 5}, SDL_Color{ 255,0,0,255 });
+		shapes::line(surface, SDL_Point{ middle.x + offset.x, middle.y + offset.y }, SDL_Point{ middle.x + offset.x * 5, middle.y + offset.y * 5 }, SDL_Color{ 255, 0, 0, 255 });
 	}
 
 	if (drawMouse && !lines.empty()) {
-		shapes::circle(surface, mousePos, (int)std::floor(getMinDist(screenToLocal(mousePos)) * zoom), SDL_Color{ 0,255,255,255 }, false);
+		shapes::circle(surface, mousePos, (int)std::floor(getMinDist(screenToLocal(mousePos)) * zoom), SDL_Color{ 0, 255, 255, 255 }, false);
 	}
 }
 
@@ -92,7 +92,7 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 	{
 		auto sizeValue = json.find("size");
 		if (sizeValue == json.end()) throw except::configValueMissing_ex("size");
-		
+
 		size = parseVec2(*sizeValue, "size");
 	}
 
@@ -110,7 +110,7 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 			{
 				auto point = lineValue.find("a");
 				if (point == lineValue.end()) throw except::configValueMissing_ex("lines[" + std::to_string(i) + "].a");
-				
+
 				line.a = parseVec2(*point, "lines[" + std::to_string(i) + "].a");
 			}
 			{

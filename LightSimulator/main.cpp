@@ -10,7 +10,7 @@ int main() try {
 	space_t space;
 
 	update(space);
-	
+
 	return 0;
 } catch (const std::exception & err) {
 	spdlog::critical(err.what());
