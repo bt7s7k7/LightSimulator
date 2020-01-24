@@ -22,5 +22,15 @@
 			"a": [ 55, 75 ],
 			"b": [ 75, 75 ]
 		}
+	],
+	"spawners": [
+		{
+			"type": "square",
+			"position": [ 50, 50 ],
+			"size": [ 20, 20 ],
+			"wavelengthMin": 0,
+			"wavelengthMax": 0,
+			"ratio": 1
+		}
 	]
 }

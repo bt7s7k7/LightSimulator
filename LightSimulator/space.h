@@ -34,8 +34,23 @@ struct objectHolder_t {
 	objectHolder_t() : items() {}
 };
 
+struct spawner_t {
+	enum class type_e {
+		square
+	};
+
+	type_e type;
+	vec2_t size;
+	vec2_t pos;
+	extent_t wavelenghtMin;
+	extent_t wavelenghtMax;
+	extent_t ratio;
+};
+
 struct space_t : public objectHolder_t<line_t> {
 	vec2_t size;
+
+	std::vector<spawner_t> spawners;
 
 	void drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& mousePos) const;
 

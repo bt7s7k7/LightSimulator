@@ -31,7 +31,37 @@
 				},
 				"required": [ "a", "b" ]
 			}
+		},
+		"spawners": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"type": {
+						"enum": [ "square" ],
+						"description": "The type of the spawner, dictates shape and required properties"
+					},
+					"position": {
+						"$ref": "#/definitions/vec2"
+					},
+					"size": {
+						"$ref": "#/definitions/vec2",
+						"description": "Only required for square emitters"
+					},
+					"wavelengthMin": {
+						"type": "number"
+					},
+					"wavelengthMax": {
+						"type": "number"
+					},
+					"ratio": {
+						"type": "number",
+						"description": "The fraction of all photons that will be emitted from this spawner"
+					}
+				},
+				"required": [ "type", "position" ]
+			}
 		}
 	},
-	"required": [ "size", "lines" ]
+	"required": [ "size", "lines", "spawners" ]
 }

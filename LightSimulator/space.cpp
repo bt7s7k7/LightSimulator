@@ -88,6 +88,26 @@ std::pair<const shape_t*, extent_t> space_t::getClosestShape(const vec2_t& point
 void space_t::loadFromFile(const std::filesystem::path& path) {
 	std::ifstream file;
 
+	constexpr char
+		VECTOR_TYPE[] = "[x : number, y : number]",
+		SIZE[] = "size",
+		LINES[] = "lines",
+		LINE_TYPE[] = "Line",
+		POINT_A[] = "a",
+		POINT_B[] = "b",
+		SPAWNERS[] = "spawners",
+		SPAWNER_TYPE[] = "Spawner",
+		POSITION[] = "position",
+		WAVELENGTH_MIN[] = "wavelengthMin",
+		WAVELENGTH_MAX[] = "wavelengthMax",
+		RATIO[] = "ratio",
+		TYPE[] = "type",
+		TYPE_ENUM[] = "'square'",
+		NUMBER_TYPE[] = "number"
+		;
+
+	std::string arrStart = "[";
+
 	file.open(path);
 
 	if (file.fail()) {
@@ -101,40 +121,112 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 			|| value.size() != 2
 			|| !value.at(0).is_number()
 			|| !value.at(1).is_number()
-			) throw except::configValueMistyped_ex(name, "[x : number, y : number]");
+			) throw except::configValueMistyped_ex(name, VECTOR_TYPE);
 
 		return vec2_t(value.at(0), value.at(1));
 	};
 
 	{
 		auto sizeValue = json.find("size");
-		if (sizeValue == json.end()) throw except::configValueMissing_ex("size");
+		if (sizeValue == json.end()) throw except::configValueMissing_ex(SIZE);
 
 		size = parseVec2(*sizeValue, "size");
 	}
 
 	{
 		auto linesValue = json.find("lines");
-		if (linesValue == json.end()) throw except::configValueMissing_ex("lines");
-		if (!linesValue->is_array()) throw except::configValueMistyped_ex("lines", "Line[]");
+		if (linesValue == json.end()) throw except::configValueMissing_ex(LINES);
+		if (!linesValue->is_array()) throw except::configValueMistyped_ex(LINES, LINE_TYPE + std::string("[]"));
 
 		objectHolder_t<line_t>::items.clear();
 		objectHolder_t<line_t>::items.reserve(linesValue->size());
 		for (size_t i = 0, len = linesValue->size(); i < len; i++) {
 			auto& lineValue = linesValue->at(i);
 			auto& line = objectHolder_t<line_t>::items.emplace_back();
-			if (!lineValue.is_object()) throw except::configValueMistyped_ex("lines[" + std::to_string(i) + "]", "Line");
+			std::string linesPtr = LINES + arrStart + std::to_string(i) + "]";
+			if (!lineValue.is_object()) throw except::configValueMistyped_ex(linesPtr, LINE_TYPE);
 			{
-				auto point = lineValue.find("a");
-				if (point == lineValue.end()) throw except::configValueMissing_ex("lines[" + std::to_string(i) + "].a");
+				auto point = lineValue.find(POINT_A);
+				std::string ptr = linesPtr + "." + POINT_A;
+				if (point == lineValue.end()) throw except::configValueMissing_ex(ptr);
 
-				line.a = parseVec2(*point, "lines[" + std::to_string(i) + "].a");
+				line.a = parseVec2(*point, ptr);
 			}
 			{
-				auto point = lineValue.find("b");
-				if (point == lineValue.end()) throw except::configValueMissing_ex("lines[" + std::to_string(i) + "].b");
+				auto point = lineValue.find(POINT_B);
+				std::string ptr = linesPtr + "." + POINT_B;
+				if (point == lineValue.end()) throw except::configValueMissing_ex(ptr);
 
-				line.b = parseVec2(*point, "lines[" + std::to_string(i) + "].b");
+				line.b = parseVec2(*point, ptr);
+			}
+		}
+	}
+
+	{
+		auto spawnersValue = json.find(SPAWNERS);
+		if (spawnersValue == json.end()) throw except::configValueMissing_ex(SPAWNERS);
+		if (!spawnersValue->is_array()) throw except::configValueMistyped_ex(SPAWNERS, SPAWNER_TYPE + arrStart + "]");
+
+		spawners.clear();
+		spawners.reserve(spawnersValue->size());
+		for (size_t i = 0, len = spawnersValue->size(); i < len; i++) {
+			auto& spawnerValue = spawnersValue->at(i);
+			auto& spawner = spawners.emplace_back();
+			std::string spawnerPtr = SPAWNERS + arrStart + std::to_string(i) + "]";
+			if (!spawnerValue.is_object()) throw except::configValueMistyped_ex(spawnerPtr, SPAWNER_TYPE);
+
+			{
+				auto point = spawnerValue.find(POSITION);
+				std::string ptr = spawnerPtr + "." + POSITION;
+				if (point == spawnerValue.end()) throw except::configValueMissing_ex(ptr);
+
+				spawner.pos = parseVec2(*point, ptr);
+			}
+
+			{
+				auto typeValue = spawnerValue.find(TYPE);
+				std::string ptr = spawnerPtr + "." + TYPE;
+				if (typeValue == spawnerValue.end()) throw except::configValueMissing_ex(ptr);
+				if (!typeValue->is_string()) throw except::configValueMistyped_ex(ptr, TYPE_ENUM);
+
+				auto type = typeValue->get<std::string>();
+				if (type == "square") {
+					spawner.type = spawner_t::type_e::square;
+					{
+						auto point = spawnerValue.find(SIZE);
+						std::string ptr = spawnerPtr + "." + SIZE;
+						if (point == spawnerValue.end()) throw except::configValueMissing_ex(ptr);
+
+						spawner.size = parseVec2(*point, ptr);
+					}
+				} else {
+					throw except::configValueMistyped_ex(ptr, TYPE_ENUM);
+				}
+			}
+
+			{
+				auto numberValue = spawnerValue.find(WAVELENGTH_MIN);
+				std::string ptr = spawnerPtr + "." + WAVELENGTH_MIN;
+				if (numberValue == spawnerValue.end()) throw except::configValueMissing_ex(ptr);
+				if (!numberValue->is_number()) throw except::configValueMistyped_ex(ptr, NUMBER_TYPE);
+
+				spawner.wavelenghtMin = numberValue->get<extent_t>();
+			}
+			{
+				auto numberValue = spawnerValue.find(WAVELENGTH_MAX);
+				std::string ptr = spawnerPtr + "." + WAVELENGTH_MAX;
+				if (numberValue == spawnerValue.end()) throw except::configValueMissing_ex(ptr);
+				if (!numberValue->is_number()) throw except::configValueMistyped_ex(ptr, NUMBER_TYPE);
+
+				spawner.wavelenghtMax = numberValue->get<extent_t>();
+			}
+			{
+				auto numberValue = spawnerValue.find(RATIO);
+				std::string ptr = spawnerPtr + "." + RATIO;
+				if (numberValue == spawnerValue.end()) throw except::configValueMissing_ex(ptr);
+				if (!numberValue->is_number()) throw except::configValueMistyped_ex(ptr, NUMBER_TYPE);
+
+				spawner.ratio = numberValue->get<extent_t>();
 			}
 		}
 	}
