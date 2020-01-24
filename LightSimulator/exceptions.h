@@ -25,4 +25,8 @@ namespace except {
 	struct configValueInvalid_ex : config_ex {
 		inline configValueInvalid_ex(const std::string& valueName, const std::string& reason) : config_ex("Value " + valueName + " is invalid, " + reason) {}
 	};
+
+	struct objectOccupied_ex : std::runtime_error {
+		using std::runtime_error::runtime_error;
+	};
 }

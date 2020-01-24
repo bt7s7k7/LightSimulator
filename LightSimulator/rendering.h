@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "vectors.h"
 #include "space.h"
+#include "exceptions.h"
 
 struct photon_t {
 	vec2_t position;
@@ -16,8 +17,9 @@ class renderWorker_t {
 protected:
 	std::vector<color_t> pixels;
 	size_t width;
+	size_t height;
 	std::vector<photon_t> photons;
-	space_t* space;
+	const space_t& space;
 	std::thread thread;
 
 	std::atomic<size_t> photonsRemaining;
@@ -28,30 +30,35 @@ public:
 	void startThread();
 
 	inline void join() {
-		thread.join();
+		if (thread.joinable()) thread.join();
 	}
 
-	inline size_t getPhotonsRemaining() {
+	inline size_t getPhotonsRemaining() const {
 		return photonsRemaining.load();
 	}
 
-	inline size_t getPhotonNum() {
+	inline size_t getPhotonNum() const {
 		return photonNum;
 	}
 
-	renderWorker_t(space_t* space, size_t photonNum, size_t width, size_t height);
+	inline bool isDone() const {
+		return photonsRemaining == 0;
+	}
+
+	renderWorker_t(const space_t& space, size_t photonNum, size_t width, size_t height);
 };
 
 class batchController_t {
 protected:
-	std::vector<renderWorker_t> workers;
+	std::vector<std::unique_ptr<renderWorker_t>> workers;
 	size_t width; 
 	size_t height;
 	std::vector<color_t> pixels;
 	bool pixelsDirty = false;
+	size_t initialWorkerNum = 0;
 
 public:
-	void startRendering(size_t photonNum, size_t threadCount = 4);
+	void startRendering(const space_t& space, size_t photonNum, size_t threadCount = 4);
 	bool isDone();
 	/* Returns the percentage of photons simulated */
 	double update();

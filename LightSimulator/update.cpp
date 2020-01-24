@@ -57,6 +57,7 @@ void update(space_t& space) {
 			if (controller->isDone()) {
 				SDL_SetWindowTitle(window.get(), WINDOW_TITLE);
 				controller.reset();
+				spdlog::info("Rendering finished");
 			}
 		}
 
@@ -105,14 +106,17 @@ void update(space_t& space) {
 						if (controller != nullptr) {
 							spdlog::error("Currently rendering");
 						} else {
-							spdlog::info("Preparing to render {} photons", number);
+							if (space.size.x == 0 || space.size.y == 0) spdlog::error("Cannot render empty space");
+							else {
+								spdlog::info("Preparing to render {} photons", number);
 
-							controller.reset(new batchController_t(
-								(size_t)std::floor(space.size.x * 10),
-								(size_t)std::floor(space.size.y * 10)
-							));
+								controller.reset(new batchController_t(
+									(size_t)std::ceil(space.size.x * 10),
+									(size_t)std::ceil(space.size.y * 10)
+								));
 
-							controller->startRendering(number);
+								controller->startRendering(space, number);
+							}
 						}
 					} else spdlog::error("Invalid number");
 				} else {
