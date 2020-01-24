@@ -7,6 +7,7 @@ struct vec2_t {
 	extent_t x;
 	extent_t y;
 
+	inline vec2_t() : x(0), y(0) {}
 	inline vec2_t(extent_t x_, extent_t y_) : x(x_), y(y_) {}
 	inline vec2_t(const SDL_Point& point) : x(point.x), y(point.y) {}
 

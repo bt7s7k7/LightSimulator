@@ -184,6 +184,7 @@
     <ClInclude Include="lib\surfaceShapes\surfaceShapes.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="shape.h" />
     <ClInclude Include="space.h" />
     <ClInclude Include="vectors.h" />
     <ClInclude Include="vendor\SDLHelper.h" />

@@ -1,7 +1,8 @@
 #pragma once
 #include "vectors.h"
+#include "shape.h"
 
-struct line_t {
+struct line_t : public shape_t {
 	vec2_t a;
 	vec2_t b;
 
@@ -16,7 +17,7 @@ struct line_t {
 		return (pa - ba * h).length();
 	}
 
-	inline vec2_t getNormal() const {
+	inline vec2_t getNormal(const vec2_t& point) const override {
 		return (b - a).perpendicular().normalize();
 	}
 

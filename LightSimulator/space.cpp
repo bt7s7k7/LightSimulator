@@ -42,30 +42,47 @@ void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& m
 		return (vec2_t(point) - vec2_t(targetSpace.x, targetSpace.y)) * (1 / zoom);
 	};
 
-	for (auto& line : lines) {
+	for (auto& line : objectHolder_t<line_t>::items) {
 		shapes::line(surface, localToScreen(line.a), localToScreen(line.b), SDL_Color{ 0,255,0,255 });
 	}
-	for (auto& line : lines) {
+	for (auto& line : objectHolder_t<line_t>::items) {
 		auto middle = localToScreen((line.a + line.b) * 0.5);
-		SDL_Point offset = line.getNormal();
+		SDL_Point offset = line.getNormal(vec2_t());
 
 		shapes::line(surface, SDL_Point{ middle.x + offset.x, middle.y + offset.y }, SDL_Point{ middle.x + offset.x * 5, middle.y + offset.y * 5 }, SDL_Color{ 255, 0, 0, 255 });
 	}
 
-	if (drawMouse && !lines.empty()) {
-		shapes::circle(surface, mousePos, (int)std::floor(getMinDist(screenToLocal(mousePos)) * zoom), SDL_Color{ 0, 255, 255, 255 }, false);
+	if (drawMouse && !objectHolder_t<line_t>::items.empty()) {
+		auto worldPos = screenToLocal(mousePos);
+		auto closest = getClosestShape(worldPos);
+		shapes::circle(surface, mousePos, (int)std::floor(closest.second * zoom), SDL_Color{ 0, 255, 255, 255 }, false);
+		SDL_Point normal = closest.first->getNormal(worldPos) * 5;
+		shapes::line(surface, mousePos, SDL_Point{ mousePos.x + normal.x, mousePos.y + normal.y }, SDL_Color{ 0, 255, 255, 255 });
 	}
 }
 
-extent_t space_t::getMinDist(const vec2_t& point) const {
-	extent_t min = std::numeric_limits<extent_t>::infinity();
-	for (size_t i = 0, len = lines.size(); i < len; i++) {
-		extent_t dist = lines[i].getDist(point);
-		if (dist < min) {
-			min = dist;
+extent_t space_t::getGlobalMinDist(const vec2_t& point) const {
+	auto min = std::numeric_limits<extent_t>::infinity();
+	{
+		auto dist = objectHolder_t<line_t>::getMinDist(point);
+		if (dist < min) min = dist;
+	}
+
+	return min;
+}
+
+std::pair<const shape_t*, extent_t> space_t::getClosestShape(const vec2_t& point) const {
+	auto min = std::numeric_limits<extent_t>::infinity();
+	const shape_t* target = nullptr;
+	{
+		auto dist = objectHolder_t<line_t>::getClosest(point);
+		if (dist.second < min) {
+			min = dist.second;
+			target = dist.first;
 		}
 	}
-	return min;
+
+	return { target, min };
 }
 
 void space_t::loadFromFile(const std::filesystem::path& path) {
@@ -101,11 +118,11 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 		if (linesValue == json.end()) throw except::configValueMissing_ex("lines");
 		if (!linesValue->is_array()) throw except::configValueMistyped_ex("lines", "Line[]");
 
-		lines.clear();
-		lines.reserve(linesValue->size());
+		objectHolder_t<line_t>::items.clear();
+		objectHolder_t<line_t>::items.reserve(linesValue->size());
 		for (size_t i = 0, len = linesValue->size(); i < len; i++) {
 			auto& lineValue = linesValue->at(i);
-			auto& line = lines.emplace_back();
+			auto& line = objectHolder_t<line_t>::items.emplace_back();
 			if (!lineValue.is_object()) throw except::configValueMistyped_ex("lines[" + std::to_string(i) + "]", "Line");
 			{
 				auto point = lineValue.find("a");
