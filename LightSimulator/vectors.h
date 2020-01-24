@@ -61,6 +61,7 @@ struct color_t {
 	extent_t b;
 
 	inline color_t(extent_t r, extent_t g, extent_t b) : r(r), g(g), b(b) {}
+	inline color_t() : r(0), g(0), b(0) {}
 
 	inline color_t operator+(const color_t& other) {
 		return color_t(

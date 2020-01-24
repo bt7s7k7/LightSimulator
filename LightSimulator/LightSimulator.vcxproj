@@ -175,6 +175,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="rendering.cpp" />
     <ClCompile Include="space.cpp" />
     <ClCompile Include="update.cpp" />
   </ItemGroup>
@@ -184,6 +185,7 @@
     <ClInclude Include="lib\surfaceShapes\surfaceShapes.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="rendering.h" />
     <ClInclude Include="shape.h" />
     <ClInclude Include="space.h" />
     <ClInclude Include="vectors.h" />

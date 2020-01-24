@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "update.h"
 #include "exceptions.h"
+#include "rendering.h"
+
+constexpr char WINDOW_TITLE[] = "Light Simulator ";
 
 void update(space_t& space) {
 
@@ -8,6 +11,7 @@ void update(space_t& space) {
 	std::deque<std::string> commands;
 	std::mutex commandsMutex;
 	std::filesystem::path lastOpenFile;
+	std::unique_ptr<batchController_t> controller;
 
 	auto commandThread = std::thread([&]() {
 		auto uniqueThreadActive = std::make_unique<std::atomic<bool>>(true);
@@ -28,7 +32,7 @@ void update(space_t& space) {
 	});
 
 	sdlhelp::unique_window_ptr window;
-	window.reset(sdlhelp::handleSDLError(SDL_CreateWindow("Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 500, 500, SDL_WINDOW_RESIZABLE)));
+	window.reset(sdlhelp::handleSDLError(SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 500, 500, SDL_WINDOW_RESIZABLE)));
 
 	spdlog::info("Window initialized");
 
@@ -45,6 +49,14 @@ void update(space_t& space) {
 				} else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
 					surface = sdlhelp::handleSDLError(SDL_GetWindowSurface(window.get()));
 				}
+			}
+		}
+
+		if (controller != nullptr) {
+			SDL_SetWindowTitle(window.get(), (WINDOW_TITLE + std::to_string(controller->update() * 100) + "%").c_str());
+			if (controller->isDone()) {
+				SDL_SetWindowTitle(window.get(), WINDOW_TITLE);
+				controller.reset();
 			}
 		}
 
@@ -80,6 +92,29 @@ void update(space_t& space) {
 					}
 				} else if (command == "q") {
 					goto eventLoopExit;
+				} else if (command[0] == 'p') {
+					size_t number = 0;
+					try {
+						auto out = std::stoll(command.substr(1));
+						if (out < 0) number = 0;
+						else number = (size_t)out;
+					} catch (const std::invalid_argument &) {
+						number = 0;
+					}
+					if (number != 0) {
+						if (controller != nullptr) {
+							spdlog::error("Currently rendering");
+						} else {
+							spdlog::info("Preparing to render {} photons", number);
+
+							controller.reset(new batchController_t(
+								(size_t)std::floor(space.size.x * 10),
+								(size_t)std::floor(space.size.y * 10)
+							));
+
+							controller->startRendering(number);
+						}
+					} else spdlog::error("Invalid number");
 				} else {
 					spdlog::error("Unknown command");
 				}

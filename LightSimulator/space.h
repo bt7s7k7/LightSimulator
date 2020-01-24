@@ -49,6 +49,7 @@ struct spawner_t {
 
 struct space_t : public objectHolder_t<line_t> {
 	vec2_t size;
+	
 
 	std::vector<spawner_t> spawners;
 
