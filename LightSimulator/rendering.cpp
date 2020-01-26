@@ -111,6 +111,12 @@ void renderWorker_t::execute() {
 		last += amount;
 	}
 
+	auto xDist = std::uniform_real_distribution(-1, 1);
+	auto yDist = std::uniform_real_distribution(-1, 1);
+	for (size_t i = 0; i < size; i++) {
+		photons[i].direction = vec2_t(xDist(randomSource), yDist(randomSource)).normalize();
+	}
+
 	// Initialize the pixels
 	pixels.resize(width * height);
 	std::fill(pixels.begin(), pixels.end(), color_t());
