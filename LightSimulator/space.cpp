@@ -239,4 +239,13 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 			}
 		}
 	}
+
+	// Normalize the spawner ratios
+	auto sum = std::accumulate(spawners.begin(), spawners.end(), 0.0, [](double value, const spawner_t& spawner) {
+		return value + spawner.ratio;
+	});
+
+	std::for_each(spawners.begin(), spawners.end(), [sum](spawner_t& spawner) {
+		spawner.ratio /= sum;
+	});
 }
