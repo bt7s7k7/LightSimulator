@@ -6,9 +6,9 @@
 
 struct photon_t {
 	vec2_t position;
-	extent_t intensity;
+	extent_t intensity = 0;
 	vec2_t direction;
-	extent_t wavelength;
+	extent_t wavelength = 0;
 
 	color_t calculateColor();
 };
