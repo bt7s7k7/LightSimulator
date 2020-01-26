@@ -58,12 +58,10 @@ color_t photon_t::calculateColor() {
 }
 
 void renderWorker_t::executeStep() {
-	for (size_t i = 0; i < photons.size();) {
+	for (size_t i = photons.size() - 1; i >= 0 && i != -1; i--) {
 		auto& curr = photons[i];
 
-		if (i == 0) photons.erase(photons.begin());
-
-		i++; // This is here so we can skip it if we remove this photon
+		photons.erase(photons.begin() + i);
 	}
 
 	photonsRemaining.store(photons.size());
