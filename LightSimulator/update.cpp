@@ -42,6 +42,8 @@ void update(space_t& space) {
 	spdlog::info("Event loop starting");
 
 	while (true) {
+		auto start = std::chrono::high_resolution_clock::now();
+
 		SDL_Event event;
 		// Polling events
 		while (SDL_PollEvent(&event)) {
@@ -144,6 +146,13 @@ void update(space_t& space) {
 			screenDirty = false;
 		}
 
+		auto end = std::chrono::high_resolution_clock::now();
+
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+		auto delay = 5 - duration;
+		if (delay > 0) {
+			SDL_Delay(delay);
+		}
 	}
 eventLoopExit:
 	spdlog::info("Event loop ended");
