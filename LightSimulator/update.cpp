@@ -12,6 +12,7 @@ void update(space_t& space) {
 	std::mutex commandsMutex;
 	std::filesystem::path lastOpenFile;
 	std::unique_ptr<batchController_t> controller;
+	bool screenDirty = true;
 
 	auto commandThread = std::thread([&]() {
 		auto uniqueThreadActive = std::make_unique<std::atomic<bool>>(true);
@@ -49,7 +50,10 @@ void update(space_t& space) {
 					goto eventLoopExit;
 				} else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
 					surface = sdlhelp::handleSDLError(SDL_GetWindowSurface(window.get()));
+					screenDirty = true;
 				}
+			} else if (event.type == SDL_MOUSEMOTION) {
+				screenDirty = true;
 			}
 		}
 		// Updating the batch controller, if there is any
@@ -79,6 +83,7 @@ void update(space_t& space) {
 					spdlog::error(err.what());
 					space.clear();
 				}
+				screenDirty = true;
 			};
 
 			while (!commands.empty()) {
@@ -102,7 +107,7 @@ void update(space_t& space) {
 						auto out = std::stoll(command.substr(1));
 						if (out < 0) number = 0;
 						else number = (size_t)out;
-					} catch (const std::invalid_argument &) {
+					} catch (const std::invalid_argument&) {
 						number = 0;
 					}
 					if (number != 0) {
@@ -127,14 +132,18 @@ void update(space_t& space) {
 				}
 			}
 		}
-	
+
 		SDL_Point mousePos;
 		auto mouseState = SDL_GetMouseState(&mousePos.x, &mousePos.y);
 
-		SDL_FillRect(surface, nullptr, 0);
-		space.drawDebug(surface, (mouseState & SDL_BUTTON_LMASK) > 0, mousePos);
+		if (screenDirty) {
+			SDL_FillRect(surface, nullptr, 0);
+			space.drawDebug(surface, (mouseState & SDL_BUTTON_LMASK) > 0, mousePos);
+			SDL_UpdateWindowSurface(window.get());
 
-		SDL_UpdateWindowSurface(window.get());
+			screenDirty = false;
+		}
+
 	}
 eventLoopExit:
 	spdlog::info("Event loop ended");
