@@ -24,8 +24,11 @@ protected:
 
 	std::atomic<size_t> photonsRemaining;
 	size_t photonNum;
-public:
+
+	/* Rendering step. Called from execute() */
 	void executeStep();
+public:
+	/* Allocates all resources and runs the render loop. The code that should run on a separate thread. */
 	void execute();
 	void startThread();
 
@@ -55,6 +58,7 @@ protected:
 	size_t height;
 	std::vector<color_t> pixels;
 	bool pixelsDirty = false;
+	/* Used to calculate the percentage of photons done */
 	size_t initialWorkerNum = 0;
 
 public:

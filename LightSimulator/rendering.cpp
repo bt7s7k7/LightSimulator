@@ -60,7 +60,7 @@ color_t photon_t::calculateColor() {
 void renderWorker_t::executeStep() {
 	for (size_t i = photons.size() - 1; i >= 0 && i != -1; i--) {
 		auto& curr = photons[i];
-
+		// Temp code
 		photons.erase(photons.begin() + i);
 	}
 
@@ -68,8 +68,13 @@ void renderWorker_t::executeStep() {
 }
 
 void renderWorker_t::execute() {
+	// Initialize photons
+	photons.resize(photonNum);
+	photonsRemaining.store(photons.size());
+	// Initialize the pixels
 	pixels.resize(width * height);
 	std::fill(pixels.begin(), pixels.end(), color_t());
+	// Start render loop
 	while (!photons.empty()) {
 		executeStep();
 	}
@@ -82,11 +87,11 @@ void renderWorker_t::startThread() {
 }
 
 renderWorker_t::renderWorker_t(const space_t& space, size_t photonNum, size_t width, size_t height) : photonNum(photonNum), width(width), space(space), height(height) {
-	photons.resize(photonNum);
-	photonsRemaining.store(photons.size());
+	// All alocations will be done on a separate thread in execute()
 };
 
 void batchController_t::startRendering(const space_t& space, size_t photonNum, size_t threadCount) {
+	/* The amount of photons for one worker */
 	auto countForOne = photonNum / threadCount;
 
 	workers.resize(threadCount);
@@ -106,14 +111,14 @@ bool batchController_t::isDone() {
 }
 
 double batchController_t::update() {
-	double done = 0;
-
+	double remaining = 0;
+	// Calculating the percentage of photons remaining
 	for (auto& worker : workers) {
-		done += (double)worker->getPhotonsRemaining() / (double)worker->getPhotonNum();
+		remaining += (double)worker->getPhotonsRemaining() / (double)worker->getPhotonNum();
 	}
 
-	done /= initialWorkerNum;
-
+	remaining /= initialWorkerNum;
+	/// Removing the finished workers
 	auto iter = std::remove_if(workers.begin(), workers.end(), [](std::unique_ptr<renderWorker_t>& worker) {
 		if (worker->isDone()) {
 			worker->join();
@@ -122,8 +127,8 @@ double batchController_t::update() {
 	});
 
 	if (iter != workers.end()) workers.erase(iter);
-
-	return 1 - done;
+	// Invert the remaining because it contains the percentage of photons remaining and we want the percetage of photons done
+	return 1 - remaining;
 }
 
 batchController_t::batchController_t(size_t width, size_t height) : width(width), height(height) {

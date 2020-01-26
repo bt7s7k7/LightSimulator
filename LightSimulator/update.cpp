@@ -42,6 +42,7 @@ void update(space_t& space) {
 
 	while (true) {
 		SDL_Event event;
+		// Polling events
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_WINDOWEVENT) {
 				if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
@@ -51,8 +52,9 @@ void update(space_t& space) {
 				}
 			}
 		}
-
+		// Updating the batch controller, if there is any
 		if (controller != nullptr) {
+			// The title is set to display the percentage of photons done
 			SDL_SetWindowTitle(window.get(), (WINDOW_TITLE + std::to_string(controller->update() * 100) + "%").c_str());
 			if (controller->isDone()) {
 				SDL_SetWindowTitle(window.get(), WINDOW_TITLE);
@@ -60,8 +62,9 @@ void update(space_t& space) {
 				spdlog::info("Rendering finished");
 			}
 		}
-
+		// Listening to commands
 		{
+			// The command queue is on a another thread
 			std::unique_lock<std::mutex> lock(commandsMutex);
 
 			auto loadFileOnPath = [&](const std::filesystem::path& path) {
@@ -124,12 +127,11 @@ void update(space_t& space) {
 				}
 			}
 		}
-
+	
 		SDL_Point mousePos;
 		auto mouseState = SDL_GetMouseState(&mousePos.x, &mousePos.y);
 
 		SDL_FillRect(surface, nullptr, 0);
-
 		space.drawDebug(surface, (mouseState & SDL_BUTTON_LMASK) > 0, mousePos);
 
 		SDL_UpdateWindowSurface(window.get());

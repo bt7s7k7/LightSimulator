@@ -31,7 +31,7 @@ void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& m
 
 	targetSpace.x = surface->w / 2 - targetSpace.w / 2;
 	targetSpace.y = surface->h / 2 - targetSpace.h / 2;
-
+	// Drawing border around draw area
 	shapes::square(surface, SDL_Rect{ targetSpace.x - 1, targetSpace.y - 1, targetSpace.w + 2, targetSpace.h + 2 }, SDL_Color{ 255, 255, 255, 255 }, false);
 
 	auto localToScreen = [&](const vec2_t& point) -> SDL_Point {
@@ -41,25 +41,27 @@ void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& m
 	auto screenToLocal = [&](const SDL_Point& point) -> vec2_t {
 		return (vec2_t(point) - vec2_t(targetSpace.x, targetSpace.y)) * (1 / zoom);
 	};
-
+	// Drawing lines
 	for (auto& line : objectHolder_t<line_t>::items) {
 		shapes::line(surface, localToScreen(line.a), localToScreen(line.b), SDL_Color{ 0,255,0,255 });
 	}
+	// Drawing line normals
 	for (auto& line : objectHolder_t<line_t>::items) {
 		auto middle = localToScreen((line.a + line.b) * 0.5);
 		SDL_Point offset = line.getNormal(vec2_t());
 
 		shapes::line(surface, SDL_Point{ middle.x + offset.x, middle.y + offset.y }, SDL_Point{ middle.x + offset.x * 5, middle.y + offset.y * 5 }, SDL_Color{ 255, 0, 0, 255 });
 	}
-
+	// Drawing min dist from mouse and normal of the closest shape
 	if (drawMouse && !objectHolder_t<line_t>::items.empty()) {
 		auto worldPos = screenToLocal(mousePos);
 		auto closest = getClosestShape(worldPos);
 		shapes::circle(surface, mousePos, (int)std::floor(closest.second * zoom), SDL_Color{ 0, 255, 255, 255 }, false);
 		SDL_Point normal = closest.first->getNormal(worldPos) * 5;
+		// Normal line drawing
 		shapes::line(surface, mousePos, SDL_Point{ mousePos.x + normal.x, mousePos.y + normal.y }, SDL_Color{ 0, 255, 255, 255 });
 	}
-
+	// Drawing spawners
 	for (auto& spawner : spawners) {
 		auto pos = localToScreen(spawner.pos);
 		constexpr SDL_Color SPAWNER_COLOR = { 255, 255, 0, 255 };
