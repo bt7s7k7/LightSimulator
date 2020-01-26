@@ -60,14 +60,30 @@ color_t photon_t::calculateColor() {
 
 void renderWorker_t::executeStep() {
 	auto dist = std::uniform_int_distribution<size_t>(0, pixels.size() - 1);
-
+	// Delete photons
 	for (size_t i = photons.size() - 1; i >= 0 && i != -1; i--) {
-		auto& curr = photons[i];
-		// Temp code
-		photons.erase(photons.begin() + i);
-		pixels[dist(randomSource)] = { 0.1, 0.1, 0.1 };
+		auto& photon = photons[i];
+		if (
+			// Check if the photon is outside the area
+			photon.position.x < 0 ||
+			photon.position.y < 0 ||
+			photon.position.x >= space.size.x ||
+			photon.position.x >= space.size.y
+			)
+			photons.erase(photons.begin() + i);
 	}
 
+	// Draw photons
+	for (size_t i = 0, len = photons.size(); i < len; i++) {
+		auto& photon = photons[i];
+
+		size_t x = (size_t)(photon.position.x / (extent_t)space.size.x * (extent_t)width);
+		size_t y = (size_t)(photon.position.y / (extent_t)space.size.y * (extent_t)width);
+
+		pixels[x + y * width] = pixels[x + y * width] + (photon.calculateColor() * photon.intensity);
+	}
+
+	photons.clear();
 
 	photonsRemaining.store(photons.size());
 }
@@ -75,7 +91,26 @@ void renderWorker_t::executeStep() {
 void renderWorker_t::execute() {
 	// Initialize photons
 	photons.resize(photonNum);
-	photonsRemaining.store(photons.size());
+	size_t size = photons.size();
+	photonsRemaining.store(size);
+	// Distribute photons
+	/* The index of the last distributed photon */
+	size_t last = 0;
+	for (auto& spawner : space.spawners) {
+		auto amount = (size_t)(spawner.ratio * photonNum);
+		if (spawner.type == spawner_t::type_e::square) {
+			auto xDist = std::uniform_real_distribution(spawner.pos.x - spawner.size.x / 2, spawner.pos.x + spawner.size.x / 2);
+			auto yDist = std::uniform_real_distribution(spawner.pos.y - spawner.size.y / 2, spawner.pos.y + spawner.size.y / 2);
+			auto wavelenghtDist = std::uniform_real_distribution(spawner.wavelenghtMin, spawner.wavelenghtMax);
+			
+			for (size_t i = last; i < amount; i++) {
+				photons[i].position = vec2_t(xDist(randomSource), yDist(randomSource));
+				photons[i].wavelength = wavelenghtDist(randomSource);
+			}
+		}
+		last += amount;
+	}
+
 	// Initialize the pixels
 	pixels.resize(width * height);
 	std::fill(pixels.begin(), pixels.end(), color_t());
