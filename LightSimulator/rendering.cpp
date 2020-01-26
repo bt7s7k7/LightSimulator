@@ -114,12 +114,14 @@ double batchController_t::update() {
 	double remaining = 0;
 	// Calculating the percentage of photons remaining
 	for (auto& worker : workers) {
+		if (!worker) continue;
 		remaining += (double)worker->getPhotonsRemaining() / (double)worker->getPhotonNum();
 	}
 
 	remaining /= initialWorkerNum;
 	/// Removing the finished workers
 	auto iter = std::remove_if(workers.begin(), workers.end(), [](std::unique_ptr<renderWorker_t>& worker) {
+		if (!worker) return true;
 		if (worker->isDone()) {
 			worker->join();
 			return true;
