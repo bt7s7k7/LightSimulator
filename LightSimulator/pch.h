@@ -33,6 +33,7 @@
 #include <thread>
 #include <deque>
 #include <chrono>
+#include <random>
 
 #include "lib/SDLHelper.h"
 #include "lib/surfaceShapes/surfaceShapes.h"

@@ -53,7 +53,7 @@ struct space_t : public objectHolder_t<line_t> {
 
 	std::vector<spawner_t> spawners;
 
-	void drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& mousePos) const;
+	void drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& mousePos, std::function<void(const SDL_Rect&, double)> preDrawCallback) const;
 
 	extent_t getGlobalMinDist(const vec2_t& point) const;
 	std::pair<const shape_t*, extent_t> getClosestShape(const vec2_t& point) const;

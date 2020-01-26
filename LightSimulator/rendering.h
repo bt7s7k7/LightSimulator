@@ -15,7 +15,6 @@ struct photon_t {
 
 class renderWorker_t {
 protected:
-	std::vector<color_t> pixels;
 	size_t width;
 	size_t height;
 	std::vector<photon_t> photons;
@@ -24,10 +23,12 @@ protected:
 
 	std::atomic<size_t> photonsRemaining;
 	size_t photonNum;
+	std::mt19937 randomSource;
 
 	/* Rendering step. Called from execute() */
 	void executeStep();
 public:
+	std::vector<color_t> pixels;
 	/* Allocates all resources and runs the render loop. The code that should run on a separate thread. */
 	void execute();
 	void startThread();
@@ -48,6 +49,10 @@ public:
 		return photonsRemaining == 0;
 	}
 
+	inline void sourceRandom(std::random_device& device) {
+		randomSource = std::mt19937(device());
+	}
+
 	renderWorker_t(const space_t& space, size_t photonNum, size_t width, size_t height);
 };
 
@@ -60,12 +65,15 @@ protected:
 	bool pixelsDirty = false;
 	/* Used to calculate the percentage of photons done */
 	size_t initialWorkerNum = 0;
+	sdlhelp::unique_surface_ptr cacheSurface;
 
 public:
 	void startRendering(const space_t& space, size_t photonNum, size_t threadCount = 4);
 	bool isDone();
 	/* Returns the percentage of photons simulated */
 	double update();
+	inline bool arePixelsDirty() { return pixelsDirty; };
+	void drawPreview(SDL_Surface* surface, const SDL_Rect& rect, double zoom);
 
 	void resize(size_t width, size_t height);
 	void clear();

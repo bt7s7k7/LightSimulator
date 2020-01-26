@@ -2,7 +2,7 @@
 #include "space.h"
 #include "exceptions.h"
 
-void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& mousePos) const {
+void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& mousePos, std::function<void(const SDL_Rect&, double)> preDrawCallback) const {
 	extent_t w = surface->w;
 	extent_t h = surface->h;
 
@@ -33,6 +33,8 @@ void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& m
 	targetSpace.y = surface->h / 2 - targetSpace.h / 2;
 	// Drawing border around draw area
 	shapes::square(surface, SDL_Rect{ targetSpace.x - 1, targetSpace.y - 1, targetSpace.w + 2, targetSpace.h + 2 }, SDL_Color{ 255, 255, 255, 255 }, false);
+
+	preDrawCallback(targetSpace, zoom);
 
 	auto localToScreen = [&](const vec2_t& point) -> SDL_Point {
 		return ((point * zoom) + vec2_t(targetSpace.x, targetSpace.y));

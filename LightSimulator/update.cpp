@@ -13,6 +13,7 @@ void update(space_t& space) {
 	std::filesystem::path lastOpenFile;
 	batchController_t controller;
 	bool screenDirty = true;
+	double pixelsPerUnit = 1;
 
 	auto commandThread = std::thread([&]() {
 		auto uniqueThreadActive = std::make_unique<std::atomic<bool>>(true);
@@ -118,8 +119,8 @@ void update(space_t& space) {
 								spdlog::info("Preparing to render {} photons", number);
 
 								controller.resize(
-									(size_t)std::ceil(space.size.x * 10),
-									(size_t)std::ceil(space.size.y * 10)
+									(size_t)std::ceil(space.size.x * pixelsPerUnit),
+									(size_t)std::ceil(space.size.y * pixelsPerUnit)
 								);
 
 								controller.startRendering(space, number);
@@ -135,9 +136,11 @@ void update(space_t& space) {
 		SDL_Point mousePos;
 		auto mouseState = SDL_GetMouseState(&mousePos.x, &mousePos.y);
 
-		if (screenDirty) {
+		if (screenDirty || controller.arePixelsDirty()) {
 			SDL_FillRect(surface, nullptr, 0);
-			space.drawDebug(surface, (mouseState & SDL_BUTTON_LMASK) > 0, mousePos);
+			space.drawDebug(surface, (mouseState & SDL_BUTTON_LMASK) > 0, mousePos, [&controller, surface, pixelsPerUnit](const SDL_Rect& rect, double zoom) {
+				controller.drawPreview(surface, rect, zoom / (double)pixelsPerUnit);
+			});
 			SDL_UpdateWindowSurface(window.get());
 
 			screenDirty = false;

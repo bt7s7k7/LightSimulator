@@ -57,12 +57,17 @@ color_t photon_t::calculateColor() {
 	);
 }
 
+
 void renderWorker_t::executeStep() {
+	auto dist = std::uniform_int_distribution<size_t>(0, pixels.size() - 1);
+
 	for (size_t i = photons.size() - 1; i >= 0 && i != -1; i--) {
 		auto& curr = photons[i];
 		// Temp code
 		photons.erase(photons.begin() + i);
+		pixels[dist(randomSource)] = { 0.1, 0.1, 0.1 };
 	}
+
 
 	photonsRemaining.store(photons.size());
 }
@@ -90,6 +95,8 @@ renderWorker_t::renderWorker_t(const space_t& space, size_t photonNum, size_t wi
 	// All alocations will be done on a separate thread in execute()
 };
 
+static std::random_device randomDevice;
+
 void batchController_t::startRendering(const space_t& space, size_t photonNum, size_t threadCount) {
 	/* The amount of photons for one worker */
 	auto countForOne = photonNum / threadCount;
@@ -97,6 +104,7 @@ void batchController_t::startRendering(const space_t& space, size_t photonNum, s
 	workers.resize(threadCount);
 	for (auto& worker : workers) {
 		worker = std::make_unique<renderWorker_t>(space, countForOne, width, height);
+		worker->sourceRandom(randomDevice);
 	}
 
 	for (auto& worker : workers) {
@@ -120,10 +128,16 @@ double batchController_t::update() {
 
 	remaining /= initialWorkerNum;
 	/// Removing the finished workers
-	auto iter = std::remove_if(workers.begin(), workers.end(), [](std::unique_ptr<renderWorker_t>& worker) {
+	auto iter = std::remove_if(workers.begin(), workers.end(), [this](std::unique_ptr<renderWorker_t>& worker) {
 		if (!worker) return true;
 		if (worker->isDone()) {
 			worker->join();
+			auto myPixels = (extent_t*)pixels.data();
+			auto theirPixels = (extent_t*)worker->pixels.data();
+			for (size_t i = 0, len = pixels.size() * 3; i < len; i++) {
+				myPixels[i] += theirPixels[i];
+			}
+			pixelsDirty = true;
 			return true;
 		} else return false;
 	});
@@ -134,10 +148,41 @@ double batchController_t::update() {
 }
 
 void batchController_t::resize(size_t width, size_t height) {
+	if (width == this->width && height == this->height)
+		return;
 	this->width = width;
 	this->height = height;
+
 	pixels.resize(width * height);
 	clear();
+}
+
+void batchController_t::drawPreview(SDL_Surface* surface, const SDL_Rect& rect, double zoom) {
+	if (!pixels.empty()) {
+		if (pixelsDirty || !cacheSurface || cacheSurface->w != rect.w || cacheSurface->h != rect.h) {
+			cacheSurface.reset(sdlhelp::handleSDLError(SDL_CreateRGBSurfaceWithFormat(surface->flags, rect.w, rect.h, surface->format->BitsPerPixel, surface->format->format)));
+			auto cacheSurfacePtr = cacheSurface.get();
+			auto myPixels = pixels.data();
+			for (int y = 0; y < cacheSurfacePtr->h; y++)
+				for (int x = 0; x < cacheSurfacePtr->w; x++) {
+					auto pX = (size_t)((double)x / zoom);
+					auto pY = (size_t)((double)y / zoom);
+					auto index = pX + pY * width;
+					int r = int(myPixels[index].r * 255);
+					int g = int(myPixels[index].g * 255);
+					int b = int(myPixels[index].b * 255);
+					if (r >= 256) r = 255;
+					if (g >= 256) g = 255;
+					if (b >= 256) b = 255;
+					SDL_Rect target = { x, y, 1, 1 };
+					SDL_FillRect(cacheSurfacePtr, &target, SDL_MapRGB(surface->format, r, g, b));
+				}
+		}
+
+		auto copy = rect;
+		sdlhelp::handleSDLError(SDL_BlitSurface(cacheSurface.get(), nullptr, surface, &copy));
+	}
+	pixelsDirty = false;
 }
 
 void batchController_t::clear() {
