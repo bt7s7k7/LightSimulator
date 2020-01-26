@@ -54,8 +54,8 @@ public:
 class batchController_t {
 protected:
 	std::vector<std::unique_ptr<renderWorker_t>> workers;
-	size_t width; 
-	size_t height;
+	size_t width = 0; 
+	size_t height = 0;
 	std::vector<color_t> pixels;
 	bool pixelsDirty = false;
 	/* Used to calculate the percentage of photons done */
@@ -67,5 +67,6 @@ public:
 	/* Returns the percentage of photons simulated */
 	double update();
 
-	batchController_t(size_t width, size_t height);
+	void resize(size_t width, size_t height);
+	void clear();
 };

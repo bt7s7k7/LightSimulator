@@ -133,7 +133,13 @@ double batchController_t::update() {
 	return 1 - remaining;
 }
 
-batchController_t::batchController_t(size_t width, size_t height) : width(width), height(height) {
+void batchController_t::resize(size_t width, size_t height) {
+	this->width = width;
+	this->height = height;
 	pixels.resize(width * height);
+	clear();
+}
+
+void batchController_t::clear() {
 	std::fill(pixels.begin(), pixels.end(), color_t());
 }

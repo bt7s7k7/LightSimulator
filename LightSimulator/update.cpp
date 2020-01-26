@@ -11,7 +11,7 @@ void update(space_t& space) {
 	std::deque<std::string> commands;
 	std::mutex commandsMutex;
 	std::filesystem::path lastOpenFile;
-	std::unique_ptr<batchController_t> controller;
+	batchController_t controller;
 	bool screenDirty = true;
 
 	auto commandThread = std::thread([&]() {
@@ -59,14 +59,11 @@ void update(space_t& space) {
 			}
 		}
 		// Updating the batch controller, if there is any
-		if (controller != nullptr) {
+		if (!controller.isDone()) {
 			// The title is set to display the percentage of photons done
-			SDL_SetWindowTitle(window.get(), (WINDOW_TITLE + std::to_string(controller->update() * 100) + "%").c_str());
-			if (controller->isDone()) {
-				SDL_SetWindowTitle(window.get(), WINDOW_TITLE);
-				controller.reset();
-				spdlog::info("Rendering finished");
-			}
+			SDL_SetWindowTitle(window.get(), (WINDOW_TITLE + std::to_string(controller.update() * 100) + "%").c_str());
+		} else {
+			SDL_SetWindowTitle(window.get(), WINDOW_TITLE);
 		}
 		// Listening to commands
 		{
@@ -113,19 +110,19 @@ void update(space_t& space) {
 						number = 0;
 					}
 					if (number != 0) {
-						if (controller != nullptr) {
+						if (!controller.isDone()) {
 							spdlog::error("Currently rendering");
 						} else {
 							if (space.size.x == 0 || space.size.y == 0) spdlog::error("Cannot render empty space");
 							else {
 								spdlog::info("Preparing to render {} photons", number);
 
-								controller.reset(new batchController_t(
+								controller.resize(
 									(size_t)std::ceil(space.size.x * 10),
 									(size_t)std::ceil(space.size.y * 10)
-								));
+								);
 
-								controller->startRendering(space, number);
+								controller.startRendering(space, number);
 							}
 						}
 					} else spdlog::error("Invalid number");
