@@ -68,7 +68,8 @@ void renderWorker_t::executeStep() {
 			photon.position.x < 0 ||
 			photon.position.y < 0 ||
 			photon.position.x >= space.size.x ||
-			photon.position.x >= space.size.y
+			photon.position.y >= space.size.y ||
+			photon.intensity < 0.001
 			)
 			photons.erase(photons.begin() + i);
 	}
@@ -83,7 +84,16 @@ void renderWorker_t::executeStep() {
 		pixels[x + y * width] = pixels[x + y * width] + (photon.calculateColor() * photon.intensity);
 	}
 
-	photons.clear();
+	// Move photons
+	for (size_t i = 0, len = photons.size(); i < len; i++) {
+		auto& photon = photons[i];
+
+		auto dist = space.getGlobalMinDist(photon.position);
+		if (dist < 0.1) photon.intensity = 0;
+		if (dist > 1) dist = 1;
+
+		photon.position = photon.position + (photon.direction * dist);
+	}
 
 	photonsRemaining.store(photons.size());
 }
@@ -111,8 +121,8 @@ void renderWorker_t::execute() {
 		last += amount;
 	}
 
-	auto xDist = std::uniform_real_distribution(-1, 1);
-	auto yDist = std::uniform_real_distribution(-1, 1);
+	auto xDist = std::uniform_real_distribution<extent_t>(-1, 1);
+	auto yDist = std::uniform_real_distribution<extent_t>(-1, 1);
 	for (size_t i = 0; i < size; i++) {
 		photons[i].direction = vec2_t(xDist(randomSource), yDist(randomSource)).normalize();
 	}
