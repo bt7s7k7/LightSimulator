@@ -187,4 +187,5 @@ void batchController_t::drawPreview(SDL_Surface* surface, const SDL_Rect& rect, 
 
 void batchController_t::clear() {
 	std::fill(pixels.begin(), pixels.end(), color_t());
+	pixelsDirty = true;
 }

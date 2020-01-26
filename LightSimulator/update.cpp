@@ -84,6 +84,7 @@ void update(space_t& space) {
 					space.clear();
 				}
 				screenDirty = true;
+				controller.clear();
 			};
 
 			while (!commands.empty()) {
