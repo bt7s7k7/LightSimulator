@@ -13,7 +13,7 @@ void update(space_t& space) {
 	std::filesystem::path lastOpenFile;
 	batchController_t controller;
 	bool screenDirty = true;
-	double pixelsPerUnit = 1;
+	double pixelsPerUnit = 10;
 
 	auto commandThread = std::thread([&]() {
 		auto uniqueThreadActive = std::make_unique<std::atomic<bool>>(true);
