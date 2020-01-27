@@ -81,13 +81,7 @@ void renderWorker_t::executeStep() {
 		size_t x = (size_t)(photon.position.x / (extent_t)space.size.x * (extent_t)width);
 		size_t y = (size_t)(photon.position.y / (extent_t)space.size.y * (extent_t)width);
 
-		pixels[x + y * width] = pixels[x + y * width] + (
-			photon.calculateColor() * (
-				photon.intensity * (
-					1 / (photon.distanceTravelled * photon.distanceTravelled) // Inverse square law
-					)
-				)
-			);
+		pixels[x + y * width] = pixels[x + y * width] + (photon.calculateColor() * photon.intensity);
 	}
 
 	// Move photons
@@ -99,8 +93,6 @@ void renderWorker_t::executeStep() {
 		if (dist > 1) dist = 1;
 
 		photon.position = photon.position + (photon.direction * dist);
-
-		photon.distanceTravelled += dist;
 	}
 
 	photonsRemaining.store(photons.size());
