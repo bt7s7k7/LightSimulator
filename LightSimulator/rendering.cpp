@@ -282,29 +282,39 @@ void batchController_t::resize(size_t width, size_t height) {
 void batchController_t::drawPreview(SDL_Surface* surface, const SDL_Rect& rect, double zoom) {
 	if (!pixels.empty()) {
 		if (pixelsDirty || !cacheSurface || cacheSurface->w != rect.w || cacheSurface->h != rect.h) {
-			cacheSurface.reset(sdlhelp::handleSDLError(SDL_CreateRGBSurfaceWithFormat(surface->flags, rect.w, rect.h, surface->format->BitsPerPixel, surface->format->format)));
-			auto cacheSurfacePtr = cacheSurface.get();
-			auto myPixels = pixels.data();
-			for (int y = 0; y < cacheSurfacePtr->h; y++)
-				for (int x = 0; x < cacheSurfacePtr->w; x++) {
-					auto pX = (size_t)((double)x / zoom);
-					auto pY = (size_t)((double)y / zoom);
-					auto index = pX + pY * width;
-					auto r = myPixels[index].r * 255;
-					auto g = myPixels[index].g * 255;
-					auto b = myPixels[index].b * 255;
-					if (r >= 256) r = 255;
-					if (g >= 256) g = 255;
-					if (b >= 256) b = 255;
-					SDL_Rect target = { x, y, 1, 1 };
-					SDL_FillRect(cacheSurfacePtr, &target, SDL_MapRGB(surface->format, (Uint8)r, (Uint8)g, (Uint8)b));
-				}
+			cacheSurface = draw(rect.w, rect.h, 1);
 		}
 
 		auto copy = rect;
 		sdlhelp::handleSDLError(SDL_BlitSurface(cacheSurface.get(), nullptr, surface, &copy));
 	}
 	pixelsDirty = false;
+}
+
+sdlhelp::unique_surface_ptr batchController_t::draw(int w, int h, extent_t exp) {
+	if (w <= 0) w = (int)width;
+	if (h <= 0) h = (int)height;
+	sdlhelp::unique_surface_ptr surface;
+	surface.reset(sdlhelp::handleSDLError(SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0)));
+	auto surfacePtr = surface.get();
+	auto myPixels = pixels.data();
+	double xZoom = (double)w / (double)width;
+	double yZoom = (double)h / (double)height;
+	for (int y = 0; y < w; y++)
+		for (int x = 0; x < h; x++) {
+			auto pX = (size_t)((double)x / xZoom);
+			auto pY = (size_t)((double)y / yZoom);
+			auto index = pX + pY * width;
+			auto r = myPixels[index].r * 255;
+			auto g = myPixels[index].g * 255;
+			auto b = myPixels[index].b * 255;
+			if (r >= 256) r = 255;
+			if (g >= 256) g = 255;
+			if (b >= 256) b = 255;
+			SDL_Rect target = { x, y, 1, 1 };
+			SDL_FillRect(surfacePtr, &target, SDL_MapRGB(surface->format, (Uint8)r, (Uint8)g, (Uint8)b));
+		}
+	return surface;
 }
 
 void batchController_t::clear() {

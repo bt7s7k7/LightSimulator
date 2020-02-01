@@ -74,6 +74,7 @@ public:
 	double update();
 	inline bool arePixelsDirty() { return pixelsDirty; };
 	void drawPreview(SDL_Surface* surface, const SDL_Rect& rect, double zoom);
+	sdlhelp::unique_surface_ptr draw(int w, int h, extent_t exp = 1);
 
 	void resize(size_t width, size_t height);
 	void clear();

@@ -5,6 +5,7 @@
 
 int main() try {
 	sdlhelp::handleSDLError(SDL_Init(SDL_INIT_VIDEO));
+	sdlhelp::handleSDLError(IMG_Init(IMG_INIT_PNG));
 	spdlog::info("SDL initialized");
 
 	space_t space;

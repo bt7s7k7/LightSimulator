@@ -149,6 +149,15 @@ void update(space_t& space) {
 						}
 					}
 					spdlog::info("{}", std::filesystem::current_path().string());
+				} else if (command[0] == 's') {
+					auto path = command.substr(1);
+					auto surface = controller.draw(0, 0, 1);
+
+					try {
+						IMG_SavePNG(surface.get(), path.c_str());
+					} catch (const sdlhelp::SDLException& err) {
+						spdlog::error("{}", err.what());
+					}
 				} else {
 					spdlog::error("Unknown command");
 				}

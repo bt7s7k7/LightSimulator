@@ -20,6 +20,7 @@
 #pragma warning( disable : 26444 )
 #pragma warning( disable : 28020 )
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 #pragma warning( pop ) 
