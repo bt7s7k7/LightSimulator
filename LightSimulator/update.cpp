@@ -140,6 +140,15 @@ void update(space_t& space) {
 					if (number != 0) {
 						pixelsPerUnit = number;
 					} else spdlog::error("Invalid number");
+				} else if (command[0] == 'c') {
+					if (command.size() != 1) {
+						try {
+							std::filesystem::current_path(command.substr(1));
+						} catch (const std::filesystem::filesystem_error & err) {
+							spdlog::error(err.what());
+						}
+					}
+					spdlog::info("{}", std::filesystem::current_path().string());
 				} else {
 					spdlog::error("Unknown command");
 				}
