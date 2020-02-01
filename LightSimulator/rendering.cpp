@@ -74,25 +74,87 @@ void renderWorker_t::executeStep() {
 			photons.erase(photons.begin() + i);
 	}
 
-	// Draw photons
 	for (size_t i = 0, len = photons.size(); i < len; i++) {
 		auto& photon = photons[i];
 
-		size_t x = (size_t)(photon.position.x / (extent_t)space.size.x * (extent_t)width);
-		size_t y = (size_t)(photon.position.y / (extent_t)space.size.y * (extent_t)width);
+		// Move photons
 
-		pixels[x + y * width] = pixels[x + y * width] + (photon.calculateColor() * photon.intensity);
-	}
-
-	// Move photons
-	for (size_t i = 0, len = photons.size(); i < len; i++) {
-		auto& photon = photons[i];
+		auto oldPos = photon.position;
 
 		auto dist = space.getGlobalMinDist(photon.position);
 		if (dist < 0.1) photon.intensity = 0;
 		if (dist > 1) dist = 1;
 
 		photon.position = photon.position + (photon.direction * dist);
+
+		/// Draw photons
+		// Old x pos
+		int ox = (int)(oldPos.x / (extent_t)space.size.x * (extent_t)width);
+		// Old y pos
+		int oy = (int)(oldPos.y / (extent_t)space.size.y * (extent_t)height);
+		// New x pos
+		int sx = (int)(photon.position.x / (extent_t)space.size.x * (extent_t)width);
+		// New y pos
+		int sy = (int)(photon.position.y / (extent_t)space.size.y * (extent_t)height);
+
+		int x, y, dx, dy, dx1, dy1, px, py, xe, ye;
+		dx = sx - ox;
+		dy = sy - oy;
+		dx1 = std::abs(dx);
+		dy1 = std::abs(dy);
+		px = 2 * dy1 - dx1;
+		py = 2 * dx1 - dy1;
+		if (dy1 <= dx1) {
+			if (dx >= 0) {
+				x = ox;
+				y = oy;
+				xe = sx;
+			} else {
+				x = sx;
+				y = sy;
+				xe = ox;
+			}
+			for (int i = 0; x < xe; i++) {
+				x = x + 1;
+				if (px < 0) {
+					px = px + 2 * dy1;
+				} else {
+					if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0)) {
+						y = y + 1;
+					} else {
+						y = y - 1;
+					}
+					px = px + 2 * (dy1 - dx1);
+				}
+				if (x >= (int)width || y >= (int)height) break;
+				pixels[x + y * width] = pixels[x + y * width] + (photon.calculateColor() * photon.intensity);
+			}
+		} else {
+			if (dy >= 0) {
+				x = ox;
+				y = oy;
+				ye = sy;
+			} else {
+				x = sx;
+				y = sy;
+				ye = oy;
+			}
+			for (int i = 0; y < ye; i++) {
+				y = y + 1;
+				if (py <= 0) {
+					py = py + 2 * dx1;
+				} else {
+					if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0)) {
+						x = x + 1;
+					} else {
+						x = x - 1;
+					}
+					py = py + 2 * (dx1 - dy1);
+				}
+				if (x >= (int)width || y >= (int)height) break;
+				pixels[x + y * width] = pixels[x + y * width] + (photon.calculateColor() * photon.intensity);
+			}
+		}
 	}
 
 	photonsRemaining.store(photons.size());
@@ -122,7 +184,7 @@ void renderWorker_t::execute() {
 			auto xDist = std::uniform_real_distribution(spawner.pos.x - spawner.size.x / 2, spawner.pos.x + spawner.size.x / 2);
 			auto yDist = std::uniform_real_distribution(spawner.pos.y - spawner.size.y / 2, spawner.pos.y + spawner.size.y / 2);
 			auto wavelenghtDist = std::uniform_real_distribution(spawner.wavelenghtMin, spawner.wavelenghtMax);
-			
+
 			for (size_t i = last; i < amount; i++) {
 				photons[i].position = vec2_t(xDist(randomSource), yDist(randomSource));
 				photons[i].wavelength = wavelenghtDist(randomSource);
@@ -131,7 +193,7 @@ void renderWorker_t::execute() {
 		last += amount;
 	}
 
-	
+
 	for (size_t i = 0; i < size; i++) {
 		photons[i].direction = getRandomDir(randomSource);
 	}
