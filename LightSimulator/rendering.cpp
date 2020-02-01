@@ -126,7 +126,7 @@ void renderWorker_t::executeStep() {
 					}
 					px = px + 2 * (dy1 - dx1);
 				}
-				if (x >= (int)width || y >= (int)height) break;
+				if (x >= (int)width || y >= (int)height || x < 0 || y < 0) break;
 				pixels[x + y * width] = pixels[x + y * width] + (photon.calculateColor() * photon.intensity);
 			}
 		} else {
@@ -151,7 +151,7 @@ void renderWorker_t::executeStep() {
 					}
 					py = py + 2 * (dx1 - dy1);
 				}
-				if (x >= (int)width || y >= (int)height) break;
+				if (x >= (int)width || y >= (int)height || x < 0 || y < 0) break;
 				pixels[x + y * width] = pixels[x + y * width] + (photon.calculateColor() * photon.intensity);
 			}
 		}
