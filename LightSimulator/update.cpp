@@ -170,7 +170,7 @@ void update(space_t& space) {
 
 		auto end = std::chrono::high_resolution_clock::now();
 
-		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+		auto duration = (int)std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 		auto delay = 5 - duration;
 		if (delay > 0) {
 			SDL_Delay(delay);
