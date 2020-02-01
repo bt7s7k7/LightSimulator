@@ -98,6 +98,16 @@ void renderWorker_t::executeStep() {
 	photonsRemaining.store(photons.size());
 }
 
+static vec2_t getRandomDir(std::mt19937& randomSource) {
+	vec2_t ret;
+	auto dist = std::uniform_real_distribution<extent_t>(-1, 1);
+	do {
+		ret = vec2_t(dist(randomSource), dist(randomSource));
+	} while (ret.length() > 1);
+
+	return ret.normalize();
+}
+
 void renderWorker_t::execute() {
 	// Initialize photons
 	photons.resize(photonNum);
@@ -121,10 +131,9 @@ void renderWorker_t::execute() {
 		last += amount;
 	}
 
-	auto xDist = std::uniform_real_distribution<extent_t>(-1, 1);
-	auto yDist = std::uniform_real_distribution<extent_t>(-1, 1);
+	
 	for (size_t i = 0; i < size; i++) {
-		photons[i].direction = vec2_t(xDist(randomSource), yDist(randomSource)).normalize();
+		photons[i].direction = getRandomDir(randomSource);
 	}
 
 	// Initialize the pixels
