@@ -103,7 +103,9 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 
 	constexpr char
 		VECTOR_TYPE[] = "[x : number, y : number]",
+		COLOR_TYPE[] = "[r : number, g : number, b : number]",
 		SIZE[] = "size",
+		COLOR[] = "color",
 		LINES[] = "lines",
 		LINE_TYPE[] = "Line",
 		POINT_A[] = "a",
@@ -137,6 +139,17 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 			) throw except::configValueMistyped_ex(name, VECTOR_TYPE);
 
 		return vec2_t(value.at(0), value.at(1));
+	};
+	
+	auto parseColor = [&](const nlohmann::json::value_type& value, const std::string& name) {
+		if (!value.is_array()
+			|| value.size() != 3
+			|| !value.at(0).is_number()
+			|| !value.at(1).is_number()
+			|| !value.at(2).is_number()
+			) throw except::configValueMistyped_ex(name, COLOR_TYPE);
+
+		return color_t(value.at(0), value.at(1), value.at(2));
 	};
 
 	{
@@ -218,20 +231,11 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 			}
 
 			{
-				auto numberValue = spawnerValue.find(WAVELENGTH_MIN);
-				std::string ptr = spawnerPtr + "." + WAVELENGTH_MIN;
-				if (numberValue == spawnerValue.end()) throw except::configValueMissing_ex(ptr);
-				if (!numberValue->is_number()) throw except::configValueMistyped_ex(ptr, NUMBER_TYPE);
+				auto point = spawnerValue.find(COLOR);
+				std::string ptr = spawnerPtr + "." + COLOR;
+				if (point == spawnerValue.end()) throw except::configValueMissing_ex(ptr);
 
-				spawner.wavelenghtMin = numberValue->get<extent_t>();
-			}
-			{
-				auto numberValue = spawnerValue.find(WAVELENGTH_MAX);
-				std::string ptr = spawnerPtr + "." + WAVELENGTH_MAX;
-				if (numberValue == spawnerValue.end()) throw except::configValueMissing_ex(ptr);
-				if (!numberValue->is_number()) throw except::configValueMistyped_ex(ptr, NUMBER_TYPE);
-
-				spawner.wavelenghtMax = numberValue->get<extent_t>();
+				spawner.color = parseColor(*point, ptr);
 			}
 			{
 				auto numberValue = spawnerValue.find(RATIO);

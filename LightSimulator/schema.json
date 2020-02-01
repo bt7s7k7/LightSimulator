@@ -11,6 +11,15 @@
 			"items": {
 				"type": "number"
 			}
+		},
+		"color": {
+			"type": "array",
+			"maxItems": 3,
+			"minItems": 3,
+			"default": [ 1, 1, 1 ],
+			"items": {
+				"type": "number"
+			}
 		}
 	},
 	"properties": {
@@ -48,18 +57,15 @@
 						"$ref": "#/definitions/vec2",
 						"description": "Only required for square emitters"
 					},
-					"wavelengthMin": {
-						"type": "number"
-					},
-					"wavelengthMax": {
-						"type": "number"
+					"color": {
+						"$ref": "#/definitions/color"
 					},
 					"ratio": {
 						"type": "number",
 						"description": "The fraction of all photons that will be emitted from this spawner"
 					}
 				},
-				"required": [ "type", "position" ]
+				"required": [ "type", "position", "color" ]
 			}
 		}
 	},

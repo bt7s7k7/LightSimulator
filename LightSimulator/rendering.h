@@ -8,9 +8,7 @@ struct photon_t {
 	vec2_t position;
 	extent_t intensity = 0.01;
 	vec2_t direction;
-	extent_t wavelength = 0;
-
-	color_t calculateColor();
+	color_t color;
 };
 
 class renderWorker_t {

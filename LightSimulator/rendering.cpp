@@ -1,63 +1,6 @@
 #include "pch.h"
 #include "rendering.h"
 
-color_t photon_t::calculateColor() {
-	if (wavelength == 0) return color_t(1, 1, 1);
-	extent_t gamma = 0.80;
-
-	extent_t factor;
-	extent_t red, green, blue;
-
-	if ((wavelength >= 380) && (wavelength < 440)) {
-		red = -(wavelength - 440) / (440.0 - 380.0); // The decimal zero tells the compiler to use doubles instead of integers
-		green = 0.0;
-		blue = 1.0;
-	} else if ((wavelength >= 440) && (wavelength < 490)) {
-		red = 0.0;
-		green = (wavelength - 440) / (490.0 - 440.0);
-		blue = 1.0;
-	} else if ((wavelength >= 490) && (wavelength < 510)) {
-		red = 0.0;
-		green = 1.0;
-		blue = -(wavelength - 510) / (510.0 - 490.0);
-	} else if ((wavelength >= 510) && (wavelength < 580)) {
-		red = (wavelength - 510) / (580.0 - 510);
-		green = 1.0;
-		blue = 0.0;
-	} else if ((wavelength >= 580) && (wavelength < 645)) {
-		red = 1.0;
-		green = -(wavelength - 645) / (645.0 - 580.0);
-		blue = 0.0;
-	} else if ((wavelength >= 645) && (wavelength < 781)) {
-		red = 1.0;
-		green = 0.0;
-		blue = 0.0;
-	} else {
-		red = 0.0;
-		green = 0.0;
-		blue = 0.0;
-	};
-
-	// Let the intensity fall off near the vision limits
-
-	/*if ((wavelength >= 380) && (wavelength < 420)) {
-		factor = 0.3 + 0.7 * (wavelength - 380) / (420.0 - 380);
-	} else if ((wavelength >= 420) && (wavelength < 701)) {
-		factor = 1.0;
-	} else if ((wavelength >= 701) && (wavelength < 781)) {
-		factor = 0.3 + 0.7 * (780 - wavelength) / (780.0 - 700);
-	} else {
-		factor = 0.0;
-	};*/
-	factor = 1;
-
-	return color_t(
-		std::pow(red * factor * 1.2642225031605563, gamma),
-		std::pow(green * factor * 2.237136465324385, gamma),
-		std::pow(blue * factor * 2.8409090909090913, gamma)
-	);
-}
-
 
 void renderWorker_t::executeStep() {
 	auto dist = std::uniform_int_distribution<size_t>(0, pixels.size() - 1);
@@ -128,7 +71,7 @@ void renderWorker_t::executeStep() {
 					px = px + 2 * (dy1 - dx1);
 				}
 				if (x >= (int)width || y >= (int)height || x < 0 || y < 0) break;
-				pixels[x + y * width] = pixels[x + y * width] + (photon.calculateColor() * photon.intensity);
+				pixels[x + y * width] = pixels[x + y * width] + (photon.color * photon.intensity);
 			}
 		} else {
 			if (dy >= 0) {
@@ -153,7 +96,7 @@ void renderWorker_t::executeStep() {
 					py = py + 2 * (dx1 - dy1);
 				}
 				if (x >= (int)width || y >= (int)height || x < 0 || y < 0) break;
-				pixels[x + y * width] = pixels[x + y * width] + (photon.calculateColor() * photon.intensity);
+				pixels[x + y * width] = pixels[x + y * width] + (photon.color * photon.intensity);
 			}
 		}
 	}
@@ -184,11 +127,10 @@ void renderWorker_t::execute() {
 		if (spawner.type == spawner_t::type_e::square) {
 			auto xDist = std::uniform_real_distribution(spawner.pos.x - spawner.size.x / 2, spawner.pos.x + spawner.size.x / 2);
 			auto yDist = std::uniform_real_distribution(spawner.pos.y - spawner.size.y / 2, spawner.pos.y + spawner.size.y / 2);
-			auto wavelenghtDist = std::uniform_real_distribution(spawner.wavelenghtMin, spawner.wavelenghtMax);
 
 			for (size_t i = last; i < amount; i++) {
 				photons[i].position = vec2_t(xDist(randomSource), yDist(randomSource));
-				photons[i].wavelength = wavelenghtDist(randomSource);
+				photons[i].color = spawner.color;
 			}
 		}
 		last += amount;
