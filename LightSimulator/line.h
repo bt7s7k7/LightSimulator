@@ -6,7 +6,7 @@ struct line_t : public shape_t {
 	vec2_t a;
 	vec2_t b;
 
-	inline extent_t getDist(const vec2_t& p) const {
+	inline extent_t getDist(const vec2_t& p) const override {
 		// Source https://iquilezles.org/www/articles/distfunctions/distfunctions.htm
 		vec2_t pa = p - a, ba = b - a;
 		extent_t h = (dot(pa, ba) / dot(ba, ba));

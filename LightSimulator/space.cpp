@@ -118,7 +118,8 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 		RATIO[] = "ratio",
 		TYPE[] = "type",
 		TYPE_ENUM[] = "'square'",
-		NUMBER_TYPE[] = "number"
+		NUMBER_TYPE[] = "number",
+		REFLECTIVITY[] = "reflectivity"
 		;
 
 	std::string arrStart = "[";
@@ -184,6 +185,13 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 				if (point == lineValue.end()) throw except::configValueMissing_ex(ptr);
 
 				line.b = parseVec2(*point, ptr);
+			}
+			{
+				auto color = lineValue.find(REFLECTIVITY);
+				std::string ptr = linesPtr + "." + REFLECTIVITY;
+				if (color == lineValue.end()) throw except::configValueMissing_ex(ptr);
+
+				line.reflectivity = parseColor(*color, ptr);
 			}
 		}
 	}

@@ -6,7 +6,6 @@
 
 struct photon_t {
 	vec2_t position;
-	extent_t intensity = 0.01;
 	vec2_t direction;
 	color_t color;
 };

@@ -36,9 +36,12 @@
 					},
 					"b": {
 						"$ref": "#/definitions/vec2"
+					},
+					"reflectivity": {
+						"$ref": "#/definitions/color"
 					}
 				},
-				"required": [ "a", "b" ]
+				"required": [ "a", "b", "reflectivity" ]
 			}
 		},
 		"spawners": {

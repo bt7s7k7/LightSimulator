@@ -13,7 +13,7 @@ void renderWorker_t::executeStep() {
 			photon.position.y < 0 ||
 			photon.position.x >= space.size.x ||
 			photon.position.y >= space.size.y ||
-			photon.intensity < 0.001
+			photon.color.getIntensity() < 0.004
 			)
 			photons.erase(photons.begin() + i);
 	}
@@ -25,9 +25,17 @@ void renderWorker_t::executeStep() {
 
 		auto oldPos = photon.position;
 
-		auto dist = space.getGlobalMinDist(photon.position);
-		if (dist < 0.1) photon.intensity = 0;
-		if (dist > 1) dist = 1;
+		auto [shape, dist] = space.getClosestShape(photon.position);
+		if (dist < 1e-10) {
+			photon.color = color_t();
+		} else if (dist < 0.1) {
+			auto normal = shape->getNormal(photon.position);
+			if (shape->getDist(photon.position + (photon.direction * 0.05)) < dist) {
+				// Collision has occured
+				photon.color = photon.color * shape->reflectivity;
+				photon.direction = reflect(photon.direction, normal);
+			}
+		}
 
 		photon.position = photon.position + (photon.direction * dist);
 
@@ -71,7 +79,7 @@ void renderWorker_t::executeStep() {
 					px = px + 2 * (dy1 - dx1);
 				}
 				if (x >= (int)width || y >= (int)height || x < 0 || y < 0) break;
-				pixels[x + y * width] = pixels[x + y * width] + (photon.color * photon.intensity);
+				pixels[x + y * width] = pixels[x + y * width] + (photon.color);
 			}
 		} else {
 			if (dy >= 0) {
@@ -96,7 +104,7 @@ void renderWorker_t::executeStep() {
 					py = py + 2 * (dx1 - dy1);
 				}
 				if (x >= (int)width || y >= (int)height || x < 0 || y < 0) break;
-				pixels[x + y * width] = pixels[x + y * width] + (photon.color * photon.intensity);
+				pixels[x + y * width] = pixels[x + y * width] + (photon.color);
 			}
 		}
 	}

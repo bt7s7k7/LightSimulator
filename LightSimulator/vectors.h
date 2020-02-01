@@ -55,6 +55,10 @@ inline extent_t dot(const vec2_t& a, const vec2_t& b) {
 	return a.x * b.x + a.y * b.y;
 }
 
+inline vec2_t reflect(const vec2_t& dir, const vec2_t& normal) {
+	return dir - (normal * (dot(dir, normal) * 2));
+}
+
 struct color_t {
 	extent_t r;
 	extent_t g;
@@ -94,5 +98,9 @@ struct color_t {
 			(Uint8)std::floor(b * 255),
 			255
 		};
+	}
+
+	inline extent_t getIntensity() const {
+		return std::sqrt(r * r + g * g + b * b);
 	}
 };
