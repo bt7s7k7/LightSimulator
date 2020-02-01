@@ -28,8 +28,8 @@
 			"type": "square",
 			"position": [ 50, 50 ],
 			"size": [ 20, 20 ],
-			"wavelengthMin": 0,
-			"wavelengthMax": 0,
+			"wavelengthMin": 380,
+			"wavelengthMax": 780,
 			"ratio": 1
 		}
 	]

@@ -1,0 +1,15 @@
+{
+	"$schema": "../LightSimulator/schema.json",
+	"lines": [],
+	"size": [ 100, 100 ],
+	"spawners": [
+		{
+			"position": [ 50, 50 ],
+			"size": [ 100, 100 ],
+			"type": "square",
+			"ratio": 1,
+			"wavelengthMax": 380,
+			"wavelengthMin": 780
+		}
+	]
+}

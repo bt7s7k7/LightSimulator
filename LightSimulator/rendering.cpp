@@ -40,7 +40,7 @@ color_t photon_t::calculateColor() {
 
 	// Let the intensity fall off near the vision limits
 
-	if ((wavelength >= 380) && (wavelength < 420)) {
+	/*if ((wavelength >= 380) && (wavelength < 420)) {
 		factor = 0.3 + 0.7 * (wavelength - 380) / (420.0 - 380);
 	} else if ((wavelength >= 420) && (wavelength < 701)) {
 		factor = 1.0;
@@ -48,12 +48,13 @@ color_t photon_t::calculateColor() {
 		factor = 0.3 + 0.7 * (780 - wavelength) / (780.0 - 700);
 	} else {
 		factor = 0.0;
-	};
+	};*/
+	factor = 1;
 
 	return color_t(
-		std::pow(red * factor, gamma),
-		std::pow(green * factor, gamma),
-		std::pow(blue * factor, gamma)
+		std::pow(red * factor * 1.2642225031605563, gamma),
+		std::pow(green * factor * 2.237136465324385, gamma),
+		std::pow(blue * factor * 2.8409090909090913, gamma)
 	);
 }
 
