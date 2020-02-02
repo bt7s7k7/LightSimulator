@@ -39,7 +39,7 @@ void renderWorker_t::executeStep() {
 		auto oldPos = photon.position;
 
 		auto [shape, dist] = space.getClosestShape(photon.position);
-		if (dist == std::numeric_limits<extent_t>::infinity()) dist = width;
+		if (dist == std::numeric_limits<extent_t>::infinity()) dist = (extent_t)width;
 		if (dist < 1e-10) {
 			photon.color = color_t();
 		} else if (dist < 0.1) {
