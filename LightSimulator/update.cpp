@@ -158,6 +158,11 @@ void update(space_t& space) {
 					} catch (const sdlhelp::SDLException& err) {
 						spdlog::error("{}", err.what());
 					}
+				} else if (command == "explorer") {
+#ifdef __WIN32__
+					system("explorer .");
+#endif // __WIN32__
+
 				} else {
 					spdlog::error("Unknown command");
 				}
