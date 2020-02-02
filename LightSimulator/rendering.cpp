@@ -30,10 +30,11 @@ void renderWorker_t::executeStep() {
 			photon.color = color_t();
 		} else if (dist < 0.1) {
 			auto normal = shape->getNormal(photon.position);
-			if (shape->getDist(photon.position + (photon.direction * 0.05)) < dist) {
+			if (shape != photon.lastCollision) {
 				// Collision has occured
 				photon.color = photon.color * shape->reflectivity;
 				photon.direction = reflect(photon.direction, normal);
+				photon.lastCollision = shape;
 			}
 		}
 

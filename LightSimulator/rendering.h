@@ -8,6 +8,7 @@ struct photon_t {
 	vec2_t position;
 	vec2_t direction;
 	color_t color;
+	const shape_t* lastCollision = nullptr;
 };
 
 class renderWorker_t {
