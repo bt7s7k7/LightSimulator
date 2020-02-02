@@ -59,6 +59,10 @@ inline vec2_t reflect(const vec2_t& dir, const vec2_t& normal) {
 	return dir - (normal * (dot(dir, normal) * 2));
 }
 
+inline vec2_t lerp(const vec2_t& a, const vec2_t& b, extent_t t) {
+	return a + ((b - a) * t);
+}
+
 struct color_t {
 	extent_t r;
 	extent_t g;

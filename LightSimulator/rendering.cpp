@@ -1,6 +1,15 @@
 #include "pch.h"
 #include "rendering.h"
 
+static vec2_t getRandomDir(std::mt19937& randomSource) {
+	vec2_t ret;
+	auto dist = std::uniform_real_distribution<extent_t>(-1, 1);
+	do {
+		ret = vec2_t(dist(randomSource), dist(randomSource));
+	} while (ret.length() > 1);
+
+	return ret.normalize();
+}
 
 void renderWorker_t::executeStep() {
 	auto dist = std::uniform_int_distribution<size_t>(0, pixels.size() - 1);
@@ -34,6 +43,14 @@ void renderWorker_t::executeStep() {
 				// Collision has occured
 				photon.color = photon.color * shape->reflectivity;
 				photon.direction = reflect(photon.direction, normal);
+				if (shape->roughness != 0) {
+					auto realNormal = normal;
+					if (shape->getDist(photon.position + (realNormal * 0.05)) < dist) {
+						realNormal = -realNormal;
+					}
+					photon.direction = lerp(photon.direction, (realNormal + getRandomDir(randomSource)).normalize(), shape->roughness);
+				}
+
 				photon.lastCollision = shape;
 			}
 		}
@@ -111,16 +128,6 @@ void renderWorker_t::executeStep() {
 	}
 
 	photonsRemaining.store(photons.size());
-}
-
-static vec2_t getRandomDir(std::mt19937& randomSource) {
-	vec2_t ret;
-	auto dist = std::uniform_real_distribution<extent_t>(-1, 1);
-	do {
-		ret = vec2_t(dist(randomSource), dist(randomSource));
-	} while (ret.length() > 1);
-
-	return ret.normalize();
 }
 
 void renderWorker_t::execute() {

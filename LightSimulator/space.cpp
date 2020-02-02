@@ -119,7 +119,8 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 		TYPE[] = "type",
 		TYPE_ENUM[] = "'square'",
 		NUMBER_TYPE[] = "number",
-		REFLECTIVITY[] = "reflectivity"
+		REFLECTIVITY[] = "reflectivity",
+		ROUGHNESS[] = "roughness"
 		;
 
 	std::string arrStart = "[";
@@ -192,6 +193,12 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 				if (color == lineValue.end()) throw except::configValueMissing_ex(ptr);
 
 				line.reflectivity = parseColor(*color, ptr);
+			}
+			{
+				auto number = lineValue.find(ROUGHNESS);
+				std::string ptr = linesPtr + "." + ROUGHNESS;
+				if (number == lineValue.end()) line.roughness = 0;
+				else line.roughness = number->get<double>();
 			}
 		}
 	}

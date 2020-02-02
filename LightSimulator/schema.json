@@ -39,6 +39,11 @@
 					},
 					"reflectivity": {
 						"$ref": "#/definitions/color"
+					},
+					"roughness": {
+						"type": "number",
+						"description": "Interpolation t from reflected vector to a random direction",
+						"default": 0
 					}
 				},
 				"required": [ "a", "b", "reflectivity" ]

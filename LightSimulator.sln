@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{4C
 	ProjectSection(SolutionItems) = preProject
 		Examples\all.json = Examples\all.json
 		Examples\room.json = Examples\room.json
+		Examples\twoLines.json = Examples\twoLines.json
 	EndProjectSection
 EndProject
 Global
