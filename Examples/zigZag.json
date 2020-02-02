@@ -1,0 +1,29 @@
+{
+	"$schema": "../LightSimulator/schema.json",
+	"size": [100,100],
+	"lines": [
+		{
+			"a": [ 0, 25 ],
+			"b": [ 100, 25 ],
+			"reflectivity": [ 1, 1, 1 ],
+			"roughness": 0.01
+		},
+		{
+			"a": [ 0, 75 ],
+			"b": [ 100, 75 ],
+			"reflectivity": [ 1, 1, 1 ],
+			"roughness": 0.01
+		}
+	],
+	"spawners": [
+		{
+			"type": "circle",
+			"color": [ 0.01, 0.01, 0.01 ],
+			"position": [ 5, 50 ],
+			"radius": 1,
+			"direction": [ 1, -5 ],
+			"ratio": 1,
+			"spread": 0.01
+		}
+	]
+}

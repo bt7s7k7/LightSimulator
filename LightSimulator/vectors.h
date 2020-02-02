@@ -49,6 +49,10 @@ struct vec2_t {
 	inline operator SDL_Point() const {
 		return SDL_Point{ (int)std::floor(x), (int)std::floor(y) };
 	}
+
+	inline bool isZero() const {
+		return x == 0 && y == 0;
+	}
 };
 
 inline extent_t dot(const vec2_t& a, const vec2_t& b) {

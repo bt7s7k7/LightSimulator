@@ -157,13 +157,14 @@ void renderWorker_t::execute() {
 				photons[i].position = spawner.pos + (getRandomInsideUnitCircle(randomSource) * spawner.size.x);
 			}
 		}
-		for (size_t i = last; i < amount; i++) photons[i].color = spawner.color;
+		for (size_t i = last; i < amount; i++) {
+			photons[i].color = spawner.color;
+			photons[i].direction = getRandomDir(randomSource);
+			if (spawner.spread < 1) {
+				photons[i].direction = lerp(spawner.direction, photons[i].direction, spawner.spread);
+			}
+		}
 		last += amount;
-	}
-
-
-	for (size_t i = 0; i < size; i++) {
-		photons[i].direction = getRandomDir(randomSource);
 	}
 
 	// Initialize the pixels

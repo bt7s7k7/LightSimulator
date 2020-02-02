@@ -46,6 +46,8 @@ struct spawner_t {
 	vec2_t pos;
 	color_t color;
 	extent_t ratio = 1;
+	vec2_t direction;
+	extent_t spread = 1;
 };
 
 struct space_t : public objectHolder_t<line_t> {

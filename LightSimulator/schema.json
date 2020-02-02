@@ -75,6 +75,12 @@
 					"radius": {
 						"type": "number",
 						"description": "The radius of the circle spawner"
+					},
+					"direction": {
+						"$ref": "#/definitions/vec2"
+					},
+					"spread": {
+						"type": "number"
 					}
 				},
 				"required": [ "type", "position", "color" ]

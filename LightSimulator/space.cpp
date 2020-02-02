@@ -74,6 +74,10 @@ void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& m
 			int radius = (int)(spawner.size.x * zoom);
 			shapes::circle(surface, pos, radius, SPAWNER_COLOR, false);
 		}
+		if (!spawner.direction.isZero()) {
+			auto end = localToScreen(spawner.pos + (spawner.direction * (5 / zoom)));
+			shapes::line(surface, pos, end, SPAWNER_COLOR);
+		}
 	}
 }
 
@@ -116,6 +120,8 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 		SPAWNERS[] = "spawners",
 		SPAWNER_TYPE[] = "Spawner",
 		POSITION[] = "position",
+		SPREAD[] = "spread",
+		DIRECTION[] = "direction",
 		WAVELENGTH_MIN[] = "wavelengthMin",
 		WAVELENGTH_MAX[] = "wavelengthMax",
 		RATIO[] = "ratio",
@@ -146,7 +152,7 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 
 		return vec2_t(value.at(0), value.at(1));
 	};
-	
+
 	auto parseColor = [&](const nlohmann::json::value_type& value, const std::string& name) {
 		if (!value.is_array()
 			|| value.size() != 3
@@ -273,6 +279,21 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 				if (!numberValue->is_number()) throw except::configValueMistyped_ex(ptr, NUMBER_TYPE);
 
 				spawner.ratio = numberValue->get<extent_t>();
+			}
+			{
+				auto numberValue = spawnerValue.find(SPREAD);
+				std::string ptr = spawnerPtr + "." + SPREAD;
+				if (numberValue == spawnerValue.end()) spawner.spread = 1;
+				else {
+					if (!numberValue->is_number()) throw except::configValueMistyped_ex(ptr, NUMBER_TYPE);
+					spawner.spread = numberValue->get<extent_t>();
+				}
+			}
+			{
+				auto point = spawnerValue.find(DIRECTION);
+				std::string ptr = spawnerPtr + "." + DIRECTION;
+				if (point == spawnerValue.end()) spawner.direction = {};
+				else spawner.direction = parseVec2(*point, ptr).normalize();
 			}
 		}
 	}
