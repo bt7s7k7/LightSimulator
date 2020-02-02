@@ -70,6 +70,9 @@ void space_t::drawDebug(SDL_Surface* surface, bool drawMouse, const SDL_Point& m
 		if (spawner.type == spawner_t::type_e::square) {
 			SDL_Point size = spawner.size * zoom;
 			shapes::square(surface, SDL_Rect{ pos.x - size.x / 2, pos.y - size.y / 2, size.x, size.y }, SPAWNER_COLOR, false);
+		} else if (spawner.type == spawner_t::type_e::circle) {
+			int radius = (int)(spawner.size.x * zoom);
+			shapes::circle(surface, pos, radius, SPAWNER_COLOR, false);
 		}
 	}
 }
@@ -116,8 +119,9 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 		WAVELENGTH_MIN[] = "wavelengthMin",
 		WAVELENGTH_MAX[] = "wavelengthMax",
 		RATIO[] = "ratio",
+		RADIUS[] = "radius",
 		TYPE[] = "type",
-		TYPE_ENUM[] = "'square'",
+		TYPE_ENUM[] = "'square' | 'circle'",
 		NUMBER_TYPE[] = "number",
 		REFLECTIVITY[] = "reflectivity",
 		ROUGHNESS[] = "roughness"
@@ -239,6 +243,16 @@ void space_t::loadFromFile(const std::filesystem::path& path) {
 						if (point == spawnerValue.end()) throw except::configValueMissing_ex(ptr);
 
 						spawner.size = parseVec2(*point, ptr);
+					}
+				} else if (type == "circle") {
+					spawner.type = spawner_t::type_e::circle;
+					{
+						auto numberValue = spawnerValue.find(RADIUS);
+						std::string ptr = spawnerPtr + "." + RADIUS;
+						if (numberValue == spawnerValue.end()) throw except::configValueMissing_ex(ptr);
+						if (!numberValue->is_number()) throw except::configValueMistyped_ex(ptr, NUMBER_TYPE);
+
+						spawner.size.x = numberValue->get<extent_t>();
 					}
 				} else {
 					throw except::configValueMistyped_ex(ptr, TYPE_ENUM);

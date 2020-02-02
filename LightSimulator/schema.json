@@ -55,7 +55,7 @@
 				"type": "object",
 				"properties": {
 					"type": {
-						"enum": [ "square" ],
+						"enum": [ "square", "circle" ],
 						"description": "The type of the spawner, dictates shape and required properties"
 					},
 					"position": {
@@ -71,6 +71,10 @@
 					"ratio": {
 						"type": "number",
 						"description": "The fraction of all photons that will be emitted from this spawner"
+					},
+					"radius": {
+						"type": "number",
+						"description": "The radius of the circle spawner"
 					}
 				},
 				"required": [ "type", "position", "color" ]

@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{4C742069-7E1C-4FA9-B922-B6E355D643B8}"
 	ProjectSection(SolutionItems) = preProject
 		Examples\all.json = Examples\all.json
+		Examples\circleSpawner.json = Examples\circleSpawner.json
 		Examples\room.json = Examples\room.json
 		Examples\twoLines.json = Examples\twoLines.json
 	EndProjectSection

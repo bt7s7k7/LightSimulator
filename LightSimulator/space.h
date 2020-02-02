@@ -36,10 +36,12 @@ struct objectHolder_t {
 
 struct spawner_t {
 	enum class type_e {
-		square
+		square,
+		circle
 	};
 
 	type_e type = type_e::square;
+	// Other than being a size of a square spawner, the x component is also the radius of a circle spawner
 	vec2_t size;
 	vec2_t pos;
 	color_t color;

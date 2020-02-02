@@ -1,14 +1,18 @@
 #include "pch.h"
 #include "rendering.h"
 
-static vec2_t getRandomDir(std::mt19937& randomSource) {
+static vec2_t getRandomInsideUnitCircle(std::mt19937& randomSource) {
 	vec2_t ret;
 	auto dist = std::uniform_real_distribution<extent_t>(-1, 1);
 	do {
 		ret = vec2_t(dist(randomSource), dist(randomSource));
 	} while (ret.length() > 1);
 
-	return ret.normalize();
+	return ret;
+}
+
+static vec2_t getRandomDir(std::mt19937& randomSource) {
+	return getRandomInsideUnitCircle(randomSource).normalize();
 }
 
 void renderWorker_t::executeStep() {
@@ -35,6 +39,7 @@ void renderWorker_t::executeStep() {
 		auto oldPos = photon.position;
 
 		auto [shape, dist] = space.getClosestShape(photon.position);
+		if (dist == std::numeric_limits<extent_t>::infinity()) dist = width;
 		if (dist < 1e-10) {
 			photon.color = color_t();
 		} else if (dist < 0.1) {
@@ -146,9 +151,13 @@ void renderWorker_t::execute() {
 
 			for (size_t i = last; i < amount; i++) {
 				photons[i].position = vec2_t(xDist(randomSource), yDist(randomSource));
-				photons[i].color = spawner.color;
+			}
+		} else if (spawner.type == spawner_t::type_e::circle) {
+			for (size_t i = last; i < amount; i++) {
+				photons[i].position = spawner.pos + (getRandomInsideUnitCircle(randomSource) * spawner.size.x);
 			}
 		}
+		for (size_t i = last; i < amount; i++) photons[i].color = spawner.color;
 		last += amount;
 	}
 
