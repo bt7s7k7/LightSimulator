@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{4C
 		Examples\all.json = Examples\all.json
 		Examples\circleSpawner.json = Examples\circleSpawner.json
 		Examples\room.json = Examples\room.json
+		Examples\roomColor.json = Examples\roomColor.json
 		Examples\twoLines.json = Examples\twoLines.json
 		Examples\zigZag.json = Examples\zigZag.json
 	EndProjectSection

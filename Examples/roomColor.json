@@ -1,0 +1,45 @@
+{
+	"$schema": "../LightSimulator/schema.json",
+	"size": [ 100, 100 ],
+	"lines": [
+		{
+			"a": [ 75, 25 ],
+			"b": [ 25, 25 ],
+			"reflectivity": [ 0, 0.5, 0 ],
+			"roughness": 1
+		},
+		{
+			"a": [ 25, 25 ],
+			"b": [ 25, 75 ],
+			"reflectivity": [ 0.5, 0, 0 ],
+			"roughness": 1
+		},
+		{
+			"a": [ 75, 75 ],
+			"b": [ 75, 25 ],
+			"reflectivity": [ 0, 0, 0.5 ],
+			"roughness": 1
+		},
+		{
+			"a": [ 25, 75 ],
+			"b": [ 45, 75 ],
+			"reflectivity": [ 0.5, 0.5, 0 ],
+			"roughness": 1
+		},
+		{
+			"a": [ 55, 75 ],
+			"b": [ 75, 75 ],
+			"reflectivity": [ 0.5, 0.5, 0 ],
+			"roughness": 1
+		}
+	],
+	"spawners": [
+		{
+			"type": "square",
+			"position": [ 50, 50 ],
+			"size": [ 20, 20 ],
+			"color": [ 0.01, 0.01, 0.01 ],
+			"ratio": 1
+		}
+	]
+}
