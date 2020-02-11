@@ -171,6 +171,7 @@ void update(space_t& space) {
 
 					try {
 						IMG_SavePNG(surface.get(), path.c_str());
+						spdlog::info("File saved")
 					} catch (const sdlhelp::SDLException& err) {
 						spdlog::error("{}", err.what());
 					}
