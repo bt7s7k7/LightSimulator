@@ -166,14 +166,17 @@ void update(space_t& space) {
 					}
 					spdlog::info("{}", std::filesystem::current_path().string());
 				} else if (command[0] == 's') {
-					auto path = command.substr(1);
-					auto surface = controller.draw(0, 0);
+					if (space.size.x == 0 || space.size.y == 0) spdlog::error("Cannot save empty space");
+					else {
+						auto path = command.substr(1);
+						auto surface = controller.draw(0, 0);
 
-					try {
-						IMG_SavePNG(surface.get(), path.c_str());
-						spdlog::info("File saved");
-					} catch (const sdlhelp::SDLException& err) {
-						spdlog::error("{}", err.what());
+						try {
+							IMG_SavePNG(surface.get(), path.c_str());
+							spdlog::info("File saved");
+						} catch (const sdlhelp::SDLException & err) {
+							spdlog::error("{}", err.what());
+						}
 					}
 				} else if (command == "explorer") {
 #ifdef __WIN32__
