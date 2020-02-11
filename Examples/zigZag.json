@@ -18,7 +18,7 @@
 	"spawners": [
 		{
 			"type": "circle",
-			"color": [ 0.01, 0.01, 0.01 ],
+			"color": [ 1, 1, 1 ],
 			"position": [ 5, 50 ],
 			"radius": 1,
 			"direction": [ 1, -5 ],
