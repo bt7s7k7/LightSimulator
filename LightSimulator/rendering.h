@@ -78,6 +78,7 @@ public:
 		multiplier = value;
 		pixelsDirty = true;
 	};
+	inline extent_t getMultiplier() { return multiplier; }
 
 	void resize(size_t width, size_t height);
 	void clear();
