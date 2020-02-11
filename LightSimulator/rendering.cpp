@@ -149,15 +149,15 @@ void renderWorker_t::execute() {
 			auto xDist = std::uniform_real_distribution(spawner.pos.x - spawner.size.x / 2, spawner.pos.x + spawner.size.x / 2);
 			auto yDist = std::uniform_real_distribution(spawner.pos.y - spawner.size.y / 2, spawner.pos.y + spawner.size.y / 2);
 
-			for (size_t i = last; i < amount; i++) {
+			for (size_t i = last; i < last + amount; i++) {
 				photons[i].position = vec2_t(xDist(randomSource), yDist(randomSource));
 			}
 		} else if (spawner.type == spawner_t::type_e::circle) {
-			for (size_t i = last; i < amount; i++) {
+			for (size_t i = last; i < last + amount; i++) {
 				photons[i].position = spawner.pos + (getRandomInsideUnitCircle(randomSource) * spawner.size.x);
 			}
 		}
-		for (size_t i = last; i < amount; i++) {
+		for (size_t i = last; i < last + amount; i++) {
 			photons[i].color = spawner.color;
 			photons[i].direction = getRandomDir(randomSource);
 			if (spawner.spread < 1) {
