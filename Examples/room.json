@@ -1,5 +1,5 @@
 {
-	"$schema": "../LightSimulator/schema.json",
+	"$schema": "https://raw.githubusercontent.com/bt7s7k7/LightSimulator/master/LightSimulator/schema.json",
 	"size": [ 100, 100 ],
 	"lines": [
 		{
