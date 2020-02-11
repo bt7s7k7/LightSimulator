@@ -251,7 +251,7 @@ void batchController_t::resize(size_t width, size_t height) {
 void batchController_t::drawPreview(SDL_Surface* surface, const SDL_Rect& rect, double zoom) {
 	if (!pixels.empty()) {
 		if (pixelsDirty || !cacheSurface || cacheSurface->w != rect.w || cacheSurface->h != rect.h) {
-			cacheSurface = draw(rect.w, rect.h, 1);
+			cacheSurface = draw(rect.w, rect.h);
 		}
 
 		auto copy = rect;
@@ -260,7 +260,7 @@ void batchController_t::drawPreview(SDL_Surface* surface, const SDL_Rect& rect, 
 	pixelsDirty = false;
 }
 
-sdlhelp::unique_surface_ptr batchController_t::draw(int w, int h, extent_t exp) {
+sdlhelp::unique_surface_ptr batchController_t::draw(int w, int h) {
 	if (w <= 0) w = (int)width;
 	if (h <= 0) h = (int)height;
 	sdlhelp::unique_surface_ptr surface;
@@ -274,9 +274,9 @@ sdlhelp::unique_surface_ptr batchController_t::draw(int w, int h, extent_t exp) 
 			auto pX = (size_t)((double)x / xZoom);
 			auto pY = (size_t)((double)y / yZoom);
 			auto index = pX + pY * width;
-			auto r = myPixels[index].r * 255;
-			auto g = myPixels[index].g * 255;
-			auto b = myPixels[index].b * 255;
+			auto r = myPixels[index].r * 255 * multiplier;
+			auto g = myPixels[index].g * 255 * multiplier;
+			auto b = myPixels[index].b * 255 * multiplier;
 			if (r >= 256) r = 255;
 			if (g >= 256) g = 255;
 			if (b >= 256) b = 255;

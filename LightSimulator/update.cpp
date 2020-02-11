@@ -151,7 +151,7 @@ void update(space_t& space) {
 					spdlog::info("{}", std::filesystem::current_path().string());
 				} else if (command[0] == 's') {
 					auto path = command.substr(1);
-					auto surface = controller.draw(0, 0, 1);
+					auto surface = controller.draw(0, 0);
 
 					try {
 						IMG_SavePNG(surface.get(), path.c_str());

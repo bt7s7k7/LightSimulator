@@ -57,13 +57,14 @@ public:
 class batchController_t {
 protected:
 	std::vector<std::unique_ptr<renderWorker_t>> workers;
-	size_t width = 0; 
+	size_t width = 0;
 	size_t height = 0;
 	std::vector<color_t> pixels;
 	bool pixelsDirty = false;
 	/* Used to calculate the percentage of photons done */
 	size_t initialWorkerNum = 0;
 	sdlhelp::unique_surface_ptr cacheSurface;
+	extent_t multiplier = 0.01;
 
 public:
 	void startRendering(const space_t& space, size_t photonNum, size_t threadCount = 4);
@@ -72,7 +73,11 @@ public:
 	double update();
 	inline bool arePixelsDirty() { return pixelsDirty; };
 	void drawPreview(SDL_Surface* surface, const SDL_Rect& rect, double zoom);
-	sdlhelp::unique_surface_ptr draw(int w, int h, extent_t exp = 1);
+	sdlhelp::unique_surface_ptr draw(int w, int h);
+	inline void setMultiplier(extent_t value) {
+		multiplier = value;
+		pixelsDirty = true;
+	};
 
 	void resize(size_t width, size_t height);
 	void clear();
