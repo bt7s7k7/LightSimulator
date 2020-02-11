@@ -23,7 +23,7 @@
 #include <SDL2/SDL_image.h>
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
-#pragma warning( pop ) 
+#pragma warning( pop )
 #include <unordered_map>
 #include <stdexcept>
 #include <cmath>

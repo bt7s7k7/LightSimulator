@@ -144,7 +144,6 @@ void shapes::line(SDL_Surface* surface, SDL_Point pos1, SDL_Point pos2, SDL_Colo
 }
 
 void shapes::lineFast(SDL_Surface* surface, SDL_Point pos1, SDL_Point pos2, SDL_Color color) {
-
 	auto [r, g, b, a] = color;
 	auto [x1, y1] = pos1;
 	auto [x2, y2] = pos2;

@@ -6,7 +6,6 @@
 constexpr char WINDOW_TITLE[] = "Light Simulator ";
 
 void update(space_t& space) {
-
 	std::atomic<bool>* threadActive = nullptr;
 	std::deque<std::string> commands;
 	std::mutex commandsMutex;
@@ -182,7 +181,6 @@ void update(space_t& space) {
 #ifdef __WIN32__
 					system("explorer .");
 #endif // __WIN32__
-
 				} else {
 					spdlog::error("Unknown command");
 				}

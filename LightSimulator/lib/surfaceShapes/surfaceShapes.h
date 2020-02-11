@@ -14,6 +14,5 @@ namespace shapes {
 		right
 	};
 
-	void text(SDL_Surface* surface, SDL_Point pos, int height, textAlign align, const char * text, SDL_Color color);
-
+	void text(SDL_Surface* surface, SDL_Point pos, int height, textAlign align, const char* text, SDL_Color color);
 }

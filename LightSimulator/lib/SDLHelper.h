@@ -2,7 +2,6 @@
 #include "pch.h"
 
 namespace sdlhelp {
-
 	/*
 		This type executes the function D
 		on operator().
@@ -175,10 +174,5 @@ namespace sdlhelp {
 		inline fontloader(const std::filesystem::path& fontFolder_) : fontFolder(fontFolder_) {}
 	};
 
-
-
-
-
 #endif
-
 }
