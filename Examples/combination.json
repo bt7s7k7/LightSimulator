@@ -1,0 +1,28 @@
+{
+	"$schema": "../LightSimulator/schema.json",
+	"lines": [],
+	"size": [ 100, 100 ],
+	"spawners": [
+		{
+			"color": [ 0.1, 1, 0.1 ],
+			"position": [ 33, 66 ],
+			"type": "circle",
+			"radius": 5,
+			"ratio": 1
+		},
+		{
+			"color": [ 0.1, 0.1, 1 ],
+			"position": [ 66, 66 ],
+			"type": "circle",
+			"radius": 5,
+			"ratio": 1
+		},
+		{
+			"color": [ 1, 0.1, 0.1 ],
+			"position": [ 50, 33 ],
+			"type": "circle",
+			"radius": 5,
+			"ratio": 1
+		}
+	]
+}
