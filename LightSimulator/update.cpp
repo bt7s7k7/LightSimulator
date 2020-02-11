@@ -140,6 +140,22 @@ void update(space_t& space) {
 					if (number != 0) {
 						pixelsPerUnit = number;
 					} else spdlog::error("Invalid number");
+				} else if (command[0] == 'm') {
+					if (command.length() == 1) {
+						spdlog::info(controller.getMultiplier());
+					} else {
+						double number = 0;
+						try {
+							auto out = std::stod(command.substr(1));
+							if (out < 0) number = 0;
+							else number = out;
+						} catch (const std::invalid_argument&) {
+							number = 0;
+						}
+						if (number != 0) {
+							controller.setMultiplier(number);
+						} else spdlog::error("Invalid number");
+					}
 				} else if (command[0] == 'c') {
 					if (command.size() != 1) {
 						try {
